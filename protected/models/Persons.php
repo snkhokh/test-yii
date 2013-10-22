@@ -74,8 +74,8 @@ class Persons extends CActiveRecord
 			'BillCh' => 'Bill Ch',
 			'UnitRem' => 'Unit Rem',
 			'UnitRemOut' => 'Unit Rem Out',
-			'TaxRateId' => 'Tax Rate',
-			'PrePayedUnits' => 'Pre Payed Units',
+			'TaxRateId' => 'Тарифный план',
+			'PrePayedUnits' => 'Лимит трафика',
 			'Flags' => 'Flags',
 			'Opt' => 'Opt',
 		);

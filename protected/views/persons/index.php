@@ -7,21 +7,21 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create Persons', 'url'=>array('create')),
-	array('label'=>'Manage Persons', 'url'=>array('admin')),
+	array('label'=>'Создать абонента', 'url'=>array('create')),
+	array('label'=>'Управление абонентами', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Persons</h1>
+<h2>Список абонентов</h2>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
         'columns'=>array(
-		'Name',
-		'FIO',
+		'Name','FIO','PrePayedUnits',
 		array(
                 'class'=>'CLinkColumn',
-            // @todo найти как установить заголовок колонки с этим классом
+                    // @todo найти как установить заголовок колонки с этим классом
+                    // @todo а также можно ли его сортировать 
                 'labelExpression'=>'count($data->hosts)." хостов"',
                 'urlExpression' => '"index.php?r=persons/view&id=".$data->id' 
                 ),

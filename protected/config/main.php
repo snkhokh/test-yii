@@ -11,6 +11,7 @@ return array(
         'charset' => 'utf-8',
         'sourceLanguage' => 'ru',
         'language' => 'ru',
+        'defaultController' => 'persons',
 	// preloading 'log' component
 	'preload'=>array('log'),
 
