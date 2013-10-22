@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Проверка связи!',
+	'name'=>'Управление системой учета трафика',
         'charset' => 'utf-8',
         'sourceLanguage' => 'ru',
         'language' => 'ru',

@@ -14,7 +14,17 @@ $this->menu=array(
 
 <h1>Persons</h1>
 
-<?php $this->widget('zii.widgets.CListView', array(
+<?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+        'columns'=>array(
+		'Name',
+		'FIO',
+		array(
+                'class'=>'CLinkColumn',
+            // @todo найти как установить заголовок колонки с этим классом
+                'labelExpression'=>'count($data->hosts)." хостов"',
+                'urlExpression' => '"index.php?r=persons/view&id=".$data->id' 
+                ),
+        )
+    )
+); ?>

@@ -12,11 +12,6 @@
 )); ?>
 
 	<div class="row">
-		<?php echo $form->label($model,'id'); ?>
-		<?php echo $form->textField($model,'id'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'Name'); ?>
 		<?php echo $form->textField($model,'Name',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
@@ -27,28 +22,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'EMail'); ?>
-		<?php echo $form->textField($model,'EMail',array('size'=>60,'maxlength'=>100)); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'Bill'); ?>
 		<?php echo $form->textField($model,'Bill'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'BillCh'); ?>
-		<?php echo $form->textField($model,'BillCh'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'UnitRem'); ?>
-		<?php echo $form->textField($model,'UnitRem',array('size'=>10,'maxlength'=>10)); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'UnitRemOut'); ?>
-		<?php echo $form->textField($model,'UnitRemOut',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row">
