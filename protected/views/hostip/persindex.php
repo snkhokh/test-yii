@@ -19,19 +19,12 @@ $this->menu=array(
 	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,
 	'columns'=>array(
-		'id',
-		'Name',
-		'int_ip',
-		'ext_ip',
-		'mask',
-		'mac',
-		/*
-		'PersonId',
-		'flags',
-		'password',
-		'inact_timeout',
-		'status',
-		'ch_status',
-		*/
+		'Name::Идентификатор (login)',
+		'password::Пароль',
+                array('value'=>'long2ip($data->int_ip)."/".$data->mask',
+                    'header' => 'IP адрес',
+                    'name' => 'int_ip'),
+		'mac::MAC адрес',
+		'flags::Флаги',
 	),
 )); ?>

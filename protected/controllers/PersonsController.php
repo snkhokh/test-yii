@@ -123,9 +123,12 @@ class PersonsController extends Controller
 	public function actionIndex()
 	{
 //            $model = Persons::model()->with('hosts')->findAll();
-//            $model=  Persons::model()->with('hosts')->findall();
+            $model=  Persons::model()->with(array('hosts'=>array(
+                    'select'=>'count(hosts.id) AS hostcount' )))->findall();
             $dataProvider=new CActiveDataProvider('Persons',array('criteria'=>array(
-                'with'=>array('hosts'))
+                'with'=>array('hosts' => array(
+                    'select'=>'count(hosts.id) AS hostcount' 
+                )))
                 ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
