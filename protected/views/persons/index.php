@@ -23,7 +23,7 @@ $this->menu=array(
                     // @todo найти как установить заголовок колонки с этим классом
                     // @todo а также можно ли его сортировать 
                 'labelExpression'=>'count($data->hosts)." хостов"',
-                'urlExpression' => '"index.php?r=persons/view&id=".$data->id' 
+                'urlExpression' => '"index.php?r=hostip/persindex&id=".$data->id' 
                 ),
         )
     )

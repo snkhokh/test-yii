@@ -1,18 +1,18 @@
 <?php
-/* @var $this TblUserController */
+/* @var $this HostipController */
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Tbl Users',
+	'Hostips',
 );
 
 $this->menu=array(
-	array('label'=>'Create TblUser', 'url'=>array('create')),
-	array('label'=>'Manage TblUser', 'url'=>array('admin')),
+	array('label'=>'Create Hostip', 'url'=>array('create')),
+	array('label'=>'Manage Hostip', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Tbl Users</h1>
+<h1>Hostips</h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,

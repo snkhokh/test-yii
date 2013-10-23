@@ -1,6 +1,6 @@
 <?php
 
-class TblUserController extends Controller
+class HostipController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -28,7 +28,7 @@ class TblUserController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','persindex'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -37,7 +37,7 @@ class TblUserController extends Controller
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -62,14 +62,14 @@ class TblUserController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new TblUser;
+		$model=new Hostip;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['TblUser']))
+		if(isset($_POST['Hostip']))
 		{
-			$model->attributes=$_POST['TblUser'];
+			$model->attributes=$_POST['Hostip'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -91,9 +91,9 @@ class TblUserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['TblUser']))
+		if(isset($_POST['Hostip']))
 		{
-			$model->attributes=$_POST['TblUser'];
+			$model->attributes=$_POST['Hostip'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -122,21 +122,29 @@ class TblUserController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('TblUser');
+		$dataProvider=new CActiveDataProvider('Hostip');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
 
+	public function actionPersIndex($id)
+	{
+		$dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
+                    array('condition' => 'PersonId = '.$id)));
+		$this->render('persindex',array(
+			'dataProvider'=>$dataProvider,
+		));
+	}
 	/**
 	 * Manages all models.
 	 */
 	public function actionAdmin()
 	{
-		$model=new TblUser('search');
+		$model=new Hostip('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['TblUser']))
-			$model->attributes=$_GET['TblUser'];
+		if(isset($_GET['Hostip']))
+			$model->attributes=$_GET['Hostip'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -147,12 +155,12 @@ class TblUserController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return TblUser the loaded model
+	 * @return Hostip the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=TblUser::model()->findByPk($id);
+		$model=Hostip::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -160,11 +168,11 @@ class TblUserController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param TblUser $model the model to be validated
+	 * @param Hostip $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='tbl-user-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='hostip-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
