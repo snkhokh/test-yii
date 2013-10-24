@@ -122,7 +122,10 @@ class PersonsController extends Controller
 	public function actionIndex()
 	{
             $dataProvider=new CActiveDataProvider('Persons',array('criteria'=>array(
-                'with'=> array('hostcount'),
+                'with'=> array('hosts'=>array(
+                    'group' => 'hosts.PersonId'
+                )),
+                'select' => 'count(*) as hostcount',
                 )
             ));
             $this->render('index',array('dataProvider'=>$dataProvider,));
