@@ -13,16 +13,19 @@ $this->menu=array(
 ?>
 
 <h2>Список абонентов</h2>
-
+$model = new Persons::
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
         'columns'=>array(
-		'Name','FIO','PrePayedUnits','hosts.hostcounter',
+		'Name','FIO','PrePayedUnits',array(
+                    'name'=>'hostcount',
+                    'sortable'=>'true',
+                    ),
 		array(
                 'class'=>'CLinkColumn',
                     // @todo найти как установить заголовок колонки с этим классом
                     // @todo а также можно ли его сортировать 
-                'labelExpression'=>'$data->hosts.hostcounter." хостов"',
+                'labelExpression'=>'$data->hostcount." хостов"',
                 'urlExpression' => '"index.php?r=hostip/persindex&id=".$data->id' 
                 ),
         )

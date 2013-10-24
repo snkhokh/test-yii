@@ -57,6 +57,7 @@ class Persons extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
                     'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId'),
+                    'hostcount'=>array(self::STAT,'Hostip','PersonId'),
 		);
 	}
 
