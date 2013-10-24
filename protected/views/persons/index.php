@@ -12,7 +12,7 @@ $this->menu=array(
 );
 ?>
 
-<h2>Список абонентов</h2>
+<h2>Список абонентов </h2>
 $model = new Persons::
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
