@@ -17,7 +17,12 @@ $this->menu=array(
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
         'columns'=>array(
-            'Name','FIO','PrePayedUnits',
+            array('name'=>'Name',
+                'type'=>'html',
+                'value'=>'CHtml::link($data->Name,
+                    Yii::app()->createUrl("/persons/view",
+                    array("id"=>$data->id)))'),
+            'FIO','PrePayedUnits',
             array('name'=>'hostcount',
                 'type'=>'html',
                 'value'=>'CHtml::link($data->hostcount." хостов",

@@ -16,19 +16,15 @@ $this->menu=array(
 );
 ?>
 
-<h1>View Persons #<?php echo $model->id; ?></h1>
+<h2>Абонент <?php echo $model->Name; ?></h2>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
 		'Name',
 		'FIO',
 		'EMail',
 		'Bill',
-		'BillCh',
-		'UnitRem',
-		'UnitRemOut',
 		'TaxRateId',
 		'PrePayedUnits',
 		'Flags',
