@@ -17,14 +17,13 @@ $this->menu=array(
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$dataProvider,
         'columns'=>array(
-		'Name','FIO','PrePayedUnits','hosts.hostcounter',
-		array(
-                'class'=>'CLinkColumn',
-                    // @todo найти как установить заголовок колонки с этим классом
-                    // @todo а также можно ли его сортировать 
-                'labelExpression'=>'$data->hosts.hostcounter." хостов"',
-                'urlExpression' => '"index.php?r=hostip/persindex&id=".$data->id' 
+            'Name','FIO','PrePayedUnits',
+            array('name'=>'hostcount',
+                'type'=>'html',
+                'value'=>'CHtml::link($data->hostcount." хостов",
+                     Yii::app()->createUrl("/hostip/persindex",
+                    array("id"=>$data->id)))',
                 ),
-        )
+	)
     )
 ); ?>

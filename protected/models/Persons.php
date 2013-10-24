@@ -1,36 +1,16 @@
 <?php
 
-/**
- * This is the model class for table "persons".
- *
- * The followings are the available columns in table 'persons':
- * @property integer $id
- * @property string $Name
- * @property string $FIO
- * @property string $EMail
- * @property integer $Bill
- * @property string $BillCh
- * @property string $UnitRem
- * @property string $UnitRemOut
- * @property integer $TaxRateId
- * @property string $PrePayedUnits
- * @property string $Flags
- * @property string $Opt
- */
 class Persons extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
+	     
+        public function tableName()
 	{
 		return 'persons';
 	}
-
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
+        
+        public $hostcount;
+        
+        public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
@@ -47,10 +27,6 @@ class Persons extends CActiveRecord
 			array('id,Name, FIO, EMail, Bill, BillCh, UnitRem, UnitRemOut, TaxRateId, PrePayedUnits, Flags, Opt', 'safe', 'on'=>'search'),
 		);
 	}
-
-	/**
-	 * @return array relational rules.
-	 */
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
@@ -60,9 +36,6 @@ class Persons extends CActiveRecord
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
 	public function attributeLabels()
 	{
 		return array(

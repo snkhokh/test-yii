@@ -122,15 +122,23 @@ class PersonsController extends Controller
 	 */
 	public function actionIndex()
 	{
-//            $model = Persons::model()->with('hosts')->findAll();
-            $model=  Persons::model()->with(array('hosts'=>array(
-                    'select'=>'count(hosts.id) AS hostcount' )))->findall();
-            $dataProvider=new CActiveDataProvider('Persons',array('criteria'=>array(
-                'with'=>array('hosts' => array(
-                    'select'=>'count(hosts.id) AS hostcount' 
-                )))
-                ));
-		$this->render('index',array(
+            $criteria = new CDbCriteria;
+            $criteria -> with = array('hosts');
+            $criteria -> select = '*,count(hosts.id) AS hostcount';
+            $criteria -> group = 'hosts.PersonId';
+            $criteria -> together =true;
+            $model =  Persons::model();
+            //$criteria ->compare('hostcount', $model->hostcount,true);
+            $dataProvider=new CActiveDataProvider($model,array('criteria' => $criteria,
+                'sort'=>array('attributes'=>array('hostcount'=>array(
+                    'asc'=>'count(hosts.id)',
+                    'desc'=>'count(hosts.id) DESC',
+                    'label'=>'Количество хостов'),
+                    'Name','FIO','PrePayedUnits',)
+                    
+                )));
+            
+            $this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
