@@ -22,7 +22,8 @@ class Persons extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
+	public $hostcount;
+        public function tableName()
 	{
 		return 'persons';
 	}
@@ -57,7 +58,7 @@ class Persons extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
                     'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId'),
-                    'hostcount'=>array(self::STAT,'Hostip','PersonId'),
+                 //   'hostcount'=>array(self::STAT,'Hostip','PersonId'),
 		);
 	}
 
