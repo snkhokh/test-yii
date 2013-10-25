@@ -20,7 +20,7 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'Name'); ?>
+		<?php echo $form->labelEx($model,'Идентификатор (login)'); ?>
 		<?php echo $form->textField($model,'Name',array('size'=>15,'maxlength'=>15)); ?>
 		<?php echo $form->error($model,'Name'); ?>
 	</div>
@@ -29,12 +29,6 @@
 		<?php echo $form->labelEx($model,'int_ip'); ?>
 		<?php echo $form->textField($model,'int_ip',array('size'=>10,'maxlength'=>10)); ?>
 		<?php echo $form->error($model,'int_ip'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'ext_ip'); ?>
-		<?php echo $form->textField($model,'ext_ip',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'ext_ip'); ?>
 	</div>
 
 	<div class="row">
@@ -65,24 +59,6 @@
 		<?php echo $form->labelEx($model,'password'); ?>
 		<?php echo $form->passwordField($model,'password',array('size'=>24,'maxlength'=>24)); ?>
 		<?php echo $form->error($model,'password'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'inact_timeout'); ?>
-		<?php echo $form->textField($model,'inact_timeout',array('size'=>2,'maxlength'=>2)); ?>
-		<?php echo $form->error($model,'inact_timeout'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'status'); ?>
-		<?php echo $form->textField($model,'status',array('size'=>7,'maxlength'=>7)); ?>
-		<?php echo $form->error($model,'status'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'ch_status'); ?>
-		<?php echo $form->textField($model,'ch_status'); ?>
-		<?php echo $form->error($model,'ch_status'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -3,9 +3,9 @@
 /* @var $model Persons */
 
 $this->breadcrumbs=array(
-	'Persons'=>array('index'),
+	'Абоненты'=>array('index'),
 	$model->Name=>array('view','id'=>$model->id),
-	'Update',
+	'Редактирование',
 );
 
 $this->menu=array(
@@ -16,6 +16,6 @@ $this->menu=array(
 );
 ?>
 
-<h1>Update Persons <?php echo $model->id; ?></h1>
+<h2>Редактирование данных абонента <?php echo $model->Name." (id:".$model->id.")"; ?></h2>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

@@ -122,7 +122,10 @@ class HostipController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Hostip');
+                $model = Hostip::model()->with('person');
+                $dataProvider=new CActiveDataProvider($model,array(
+                    'sort'=>array('attributes'=>array('person.Name','Name','int_ip','mac','flags'))
+                ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

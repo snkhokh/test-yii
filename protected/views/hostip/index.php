@@ -3,7 +3,7 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Hostips',
+	'Хосты',
 );
 
 $this->menu=array(
@@ -11,10 +11,24 @@ $this->menu=array(
 	array('label'=>'Manage Hostip', 'url'=>array('admin')),
 );
 ?>
-
-<h1>Hostips</h1>
-
-<?php $this->widget('zii.widgets.CListView', array(
+<h2>Зарегистрированные хосты</h2>
+    <?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
+	'columns'=>array(
+		array('value'=>'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/view",
+                    array("id"=>$data->id)))',
+                    'type'=>'html',
+                    'header' => 'IP адрес',
+                    'name' => 'int_ip'),
+                'Name::Идентификатор(login)',
+		'mac::MAC адрес',
+		'flags::Флаги',
+                array('header'=>'Абонент',
+                    'name'=>'person.Name',
+                    'type'=>'html',
+                    'value'=>  'isset($data->person->id) ? CHtml::link($data->person->Name,Yii::app()->createUrl("/persons/view",
+                    array("id"=>$data->person->id))):""'
+                    ),
+	),
 )); ?>

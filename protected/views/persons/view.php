@@ -1,18 +1,15 @@
 <?php
-/* @var $this PersonsController */
-/* @var $model Persons */
-
 $this->breadcrumbs=array(
-	'Persons'=>array('index'),
+	'Абоненты'=>array('index'),
 	$model->Name,
 );
 
 $this->menu=array(
-	array('label'=>'List Persons', 'url'=>array('index')),
-	array('label'=>'Create Persons', 'url'=>array('create')),
-	array('label'=>'Update Persons', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Persons', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Persons', 'url'=>array('admin')),
+	array('label'=>'Редактировать данные', 'url'=>array('update', 'id'=>$model->id)),
+	array('label'=>'Удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+	array('label'=>'Создать нового', 'url'=>array('create')),
+	array('label'=>'Перейти к хостам', 'url'=>array('/hostip/persindex','id'=>$model->id)),
+	array('label'=>'Перейти к списку абонентов', 'url'=>array('index')),
 );
 ?>
 
@@ -24,7 +21,6 @@ $this->menu=array(
 		'Name',
 		'FIO',
 		'EMail',
-		'Bill',
 		'taxs.Name:text:Тарифный план',
 		'PrePayedUnits',
 		'Flags',

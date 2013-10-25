@@ -36,6 +36,7 @@ class Hostip extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('mask, PersonId', 'numerical', 'integerOnly'=>true),
+			array('Name', 'required'),
 			array('Name', 'length', 'max'=>15),
 			array('int_ip, ext_ip, flags', 'length', 'max'=>10),
 			array('mac', 'length', 'max'=>17),

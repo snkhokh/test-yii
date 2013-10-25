@@ -1,37 +1,6 @@
 <?php
 
-/**
- * This is the model class for table "tax_rates".
- *
- * The followings are the available columns in table 'tax_rates':
- * @property integer $id
- * @property string $Name
- * @property string $AbonCharge
- * @property string $TrafUnit
- * @property string $PrePayedUnits
- * @property string $dir
- * @property string $fr_1
- * @property string $to_1
- * @property string $in_ch1
- * @property string $out_ch1
- * @property string $fr_2
- * @property string $to_2
- * @property string $in_ch2
- * @property string $out_ch2
- * @property string $fr_3
- * @property string $to_3
- * @property string $in_ch3
- * @property string $out_ch3
- * @property string $fr_4
- * @property string $to_4
- * @property string $in_ch4
- * @property string $out_ch4
- * @property string $fr_5
- * @property string $to_5
- * @property string $in_ch5
- * @property string $out_ch5
- * @property string $flag
- */
+
 class TaxRates extends CActiveRecord
 {
 	/**
