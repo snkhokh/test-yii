@@ -25,7 +25,7 @@ $this->menu=array(
 		'FIO',
 		'EMail',
 		'Bill',
-		'TaxRateId',
+		'taxs.Name:text:Тарифный план',
 		'PrePayedUnits',
 		'Flags',
 		'Opt',
