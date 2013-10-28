@@ -27,7 +27,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'int_ip'); ?>
-		<?php echo $form->textField($model,'int_ip',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->textField($model,'int_ip',array('size'=>15,'maxlength'=>15,'value'=>long2ip($model->int_ip))); ?>
 		<?php echo $form->error($model,'int_ip'); ?>
 	</div>
 

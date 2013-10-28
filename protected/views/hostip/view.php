@@ -23,8 +23,9 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'Name',
-		'int_ip',
-		'ext_ip',
+		array('name'=>'int_ip',
+                    'value'=>long2ip($model->int_ip)),
+		'int_ip_s',
 		'mask',
 		'mac',
 		'PersonId',

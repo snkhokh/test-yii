@@ -14,7 +14,7 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('int_ip')); ?>:</b>
-	<?php echo CHtml::encode($data->int_ip); ?>
+	<?php echo CHtml::encode(long2ip($data->int_ip)); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('ext_ip')); ?>:</b>

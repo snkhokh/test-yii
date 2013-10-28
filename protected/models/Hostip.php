@@ -26,8 +26,15 @@ class Hostip extends CActiveRecord
 	{
 		return 'hostip';
 	}
+        public $int_ip_s;
+        public function __get($name) {
+            if ($name=='int_ip_s') return long2ip ($this->ip_int);
+            return parent::__get($name);
+            
+        }
 
-	/**
+
+        /**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
@@ -35,22 +42,21 @@ class Hostip extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('mask, PersonId', 'numerical', 'integerOnly'=>true),
-			array('Name', 'required'),
-			array('Name', 'length', 'max'=>15),
-			array('int_ip, ext_ip, flags', 'length', 'max'=>10),
-			array('mac', 'length', 'max'=>17),
+			array('mask', 'numerical', 'integerOnly'=>true,'min' =>8,'max'=>32),
+			array('Name,int_ip,mask,password', 'required'),
+			array('Name', 'unique'),
+			array('Name', 'length', 'max'=>15,'min'=>4),
 			array('password', 'length', 'max'=>24),
-			array('inact_timeout', 'length', 'max'=>2),
-			array('status', 'length', 'max'=>7),
-			array('ch_status', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, Name, int_ip, ext_ip, mask, mac, PersonId, flags, password, inact_timeout, status, ch_status', 'safe', 'on'=>'search'),
+//                        array('int_ip','match','pattern'=>'/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
+                        array('int_ip','filter','filter'=>'ip2long'),
+			array('int_ip', 'unique'),
+                    
+			array('Name, int_ip, mask, mac, PersonId, flags, password', 'safe', 'on'=>'search'),
 		);
 	}
+        
 
-	/**
+        /**
 	 * @return array relational rules.
 	 */
 	public function relations()
