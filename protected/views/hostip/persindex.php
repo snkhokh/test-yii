@@ -14,17 +14,19 @@ $this->menu=array(
 
 ?>
 
-<h2>Хосты абонента</h2>
+<h2>Хосты абонента <?php //echo $model->person->Name; ?></h2>
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,
 	'columns'=>array(
-		'Name::Идентификатор (login)',
-		'password::Пароль',
-                array('value'=>'long2ip($data->int_ip)."/".$data->mask',
+    		array('value'=>'CHtml::link($data->int_ip_s."/".$data->mask,Yii::app()->createUrl("/hostip/view",
+                    array("id"=>$data->id)))',
+                    'type'=>'html',
                     'header' => 'IP адрес',
                     'name' => 'int_ip'),
-		'mac::MAC адрес',
-		'flags::Флаги',
+		'Name', 'password','mac','flags',
+                
+		
 	),
+
 )); ?>

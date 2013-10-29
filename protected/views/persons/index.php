@@ -3,7 +3,7 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Persons',
+	'Все абоненты',
 );
 
 $this->menu=array(

@@ -15,12 +15,12 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note">Поля, отмеченные <span class="required">*</span> заполнять обязательно.</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'Идентификатор (login)'); ?>
+		<?php echo $form->labelEx($model,'Name'); ?>
 		<?php echo $form->textField($model,'Name',array('size'=>15,'maxlength'=>15)); ?>
 		<?php echo $form->error($model,'Name'); ?>
 	</div>

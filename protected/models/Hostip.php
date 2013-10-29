@@ -31,7 +31,6 @@ class Hostip extends CActiveRecord
         public function __get($name) {
             if ($name=='int_ip_s') return long2ip ($this->int_ip);
             return parent::__get($name);
-            
         }
         
         public function __isset($name) {
@@ -49,27 +48,24 @@ class Hostip extends CActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('mask', 'numerical', 'integerOnly'=>true,'min' =>8,'max'=>32),
 			array('Name,int_ip_s,mask,password', 'required'),
 			array('Name', 'unique'),
 			array('Name', 'length', 'max'=>15,'min'=>4),
-			array('password', 'length', 'max'=>24),
                         array('int_ip_s','match','pattern'=>'/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
-                        //array('int_ip','filter','filter'=>'ip2long'),
-			array('int_ip_s', 'myUnique'),
-                    
-			array('Name, mask, mac, PersonId, flags, password', 'safe', 'on'=>'search'),
+			array('int_ip_s', 'UniqueIpS'),
+			array('password', 'length', 'max'=>24,'min'=>4),
+			array('mask', 'numerical', 'integerOnly'=>true,'min' =>8,'max'=>32),
+			array('Name, mask, mac, flags, password', 'safe', 'on'=>'search'),
 		);
 	}
-        public function myUnique($attr,$param){
+        public function UniqueIpS($attr,$param){
             if(!$this->hasErrors())
 		{
-                $value = $this->int_ip_s;
+                $value = $this->$attr;
 		$criteria=new CDbCriteria();
-		$criteria->addCondition("int_ip=".ip2long($value));
+		$criteria->addCondition("int_ip=:p1");
+                $criteria->params[':p1'] = ip2long($value);
 
 		if($this->isNewRecord)
 			$exists=$this->exexists($criteria);
@@ -80,7 +76,7 @@ class Hostip extends CActiveRecord
 			$n=count($objects);
 			if($n===1)
 			{
-			// non-primary key, need to exclude the current record based on PK
+			// need to exclude the current record based on PK
                             $exists=array_shift($objects)->getPrimaryKey()!=$this->getOldPrimaryKey();
 			}
 			else
@@ -89,8 +85,11 @@ class Hostip extends CActiveRecord
 
 		if($exists)
 		{
-                    $this->addError('int_ip_s','В базе уже имеется такой IP');
-		}
+                    $message='{attr} "{value}" уже занят';
+                    $this->addError($attr,strtr($message,array(
+                        '{value}'=>CHtml::encode($value),
+                        '{attr}'=>$this->getAttributeLabel($attr))));
+                    }
             }
         }
 

@@ -136,7 +136,11 @@ class PersonsController extends Controller
                     'label'=>'Количество хостов'),
                     'Name','FIO','PrePayedUnits',)
                     
-                )));
+                ),
+                'pagination'=>array(
+                    'pageSize'=> 20,
+                )
+                ));
             
             $this->render('index',array(
 			'dataProvider'=>$dataProvider,
