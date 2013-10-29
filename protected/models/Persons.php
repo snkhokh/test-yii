@@ -15,16 +15,16 @@ class Persons extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('Bill, TaxRateId', 'numerical', 'integerOnly'=>true),
+			array('Bill', 'numerical', 'integerOnly'=>true),
 			array('Name', 'length', 'max'=>50),
 			array('FIO', 'length', 'max'=>150),
 			array('EMail', 'length', 'max'=>100),
-			array('UnitRem, UnitRemOut, PrePayedUnits', 'length', 'max'=>10),
+			array('PrePayedUnits', 'length', 'max'=>10),
 			array('Flags', 'length', 'max'=>5),
-			array('BillCh, Opt', 'safe'),
+			array('Opt', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id,Name, FIO, EMail, Bill, BillCh, UnitRem, UnitRemOut, TaxRateId, PrePayedUnits, Flags, Opt', 'safe', 'on'=>'search'),
+			array('id,Name, FIO, EMail, Bill, PrePayedUnits, Flags, Opt', 'safe', 'on'=>'search'),
 		);
 	}
 	public function relations()

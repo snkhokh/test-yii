@@ -3,16 +3,14 @@
 /* @var $model Hostip */
 
 $this->breadcrumbs=array(
-	'Hostips'=>array('index'),
+	'Все хосты'=>array('index'),
 	$model->Name=>array('view','id'=>$model->id),
-	'Update',
+	'Редактирование',
 );
 
 $this->menu=array(
-	array('label'=>'List Hostip', 'url'=>array('index')),
-	array('label'=>'Create Hostip', 'url'=>array('create')),
-	array('label'=>'View Hostip', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Hostip', 'url'=>array('admin')),
+	array('label'=>'Создать хост', 'url'=>array('create')),
+	array('label'=>'Просмотр данных', 'url'=>array('view', 'id'=>$model->id)),
 );
 ?>
 

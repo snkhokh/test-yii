@@ -3,15 +3,14 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Хосты',
+	'Все хосты',
 );
 
 $this->menu=array(
-	array('label'=>'Create Hostip', 'url'=>array('create')),
-	array('label'=>'Manage Hostip', 'url'=>array('admin')),
+	array('label'=>'Создать хост', 'url'=>array('create')),
 );
 ?>
-<h2>Зарегистрированные хосты</h2>
+<h2>Зарегистрированные в системе хосты</h2>
     <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,
@@ -23,7 +22,7 @@ $this->menu=array(
                     'name' => 'int_ip'),
                 'Name::Идентификатор(login)',
 		'mac::MAC адрес',
-		'flags::Флаги',
+		'flag_block:boolean',
                 array('header'=>'Абонент',
                     'name'=>'person.Name',
                     'type'=>'html',

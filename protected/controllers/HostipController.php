@@ -124,7 +124,8 @@ class HostipController extends Controller
 	{
                 $model = Hostip::model()->with('person');
                 $dataProvider=new CActiveDataProvider($model,array(
-                    'sort'=>array('attributes'=>array('person.Name','Name','int_ip','mac','flags'))
+                    'sort'=>array('attributes'=>array('person.Name','Name','int_ip','mac','flags')),
+                    'pagination'=>array('pageSize'=>20),
                 ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
@@ -133,10 +134,14 @@ class HostipController extends Controller
 
 	public function actionPersIndex($id)
 	{
-		$dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
-                    array('condition' => 'PersonId = '.$id)));
+		$rec = Hostip::model()->with('person')->find('PersonId = :id',array(':id'=>$id));
+                $person = (isset($rec->person->Name)) ? $rec->person->Name : '';
+                $dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
+                    array('condition' => 'PersonId = '.$id),
+                    'pagination'=>array('pageSize'=>20),));
 		$this->render('persindex',array(
-			'dataProvider'=>$dataProvider,
+                    'dataProvider'=>$dataProvider,
+                    'person'=>$person,
 		));
 	}
 	/**

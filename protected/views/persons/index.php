@@ -8,7 +8,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'Создать абонента', 'url'=>array('create')),
-	array('label'=>'Управление абонентами', 'url'=>array('admin')),
+	
 );
 ?>
 

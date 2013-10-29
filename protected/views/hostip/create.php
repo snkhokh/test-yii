@@ -3,8 +3,8 @@
 /* @var $model Hostip */
 
 $this->breadcrumbs=array(
-	'Hostips'=>array('index'),
-	'Create',
+	'Все хосты'=>array('index'),
+	'Создать хост',
 );
 
 $this->menu=array(

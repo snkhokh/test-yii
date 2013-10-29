@@ -30,70 +30,69 @@ class Hostip extends CActiveRecord
         
         public function __get($name) {
             if ($name=='int_ip_s') return long2ip ($this->int_ip);
+            if ($name=='flag_block') return preg_match('/A/',$this->flags);
             return parent::__get($name);
         }
         
         public function __isset($name) {
             if ($name=='int_ip_s') return true;
+            if ($name=='flag_block') return true;
             else return parent::__isset($name);
         }
         
         public function __set($name,$value) {
             if ($name=='int_ip_s') $this->int_ip = ip2long ($value);
+            if ($name=='flag_block') {
+                if ($value) {
+                    if (!preg_match('/A/',$this->flags))  $this->flags.='A';
+                } else $this->flags = preg_replace ('/A/', '',$this->flags );
+            }
             else return parent::__set($name,$value);
         }
 
-                /**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('Name,int_ip_s,mask,password', 'required'),
-			array('Name', 'unique'),
-			array('Name', 'length', 'max'=>15,'min'=>4),
-                        array('int_ip_s','match','pattern'=>'/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
-			array('int_ip_s', 'UniqueIpS'),
-			array('password', 'length', 'max'=>24,'min'=>4),
-			array('mask', 'numerical', 'integerOnly'=>true,'min' =>8,'max'=>32),
-			array('Name, mask, mac, flags, password', 'safe', 'on'=>'search'),
-		);
-	}
-        public function UniqueIpS($attr,$param){
-            if(!$this->hasErrors())
-		{
-                $value = $this->$attr;
-		$criteria=new CDbCriteria();
-		$criteria->addCondition("int_ip=:p1");
-                $criteria->params[':p1'] = ip2long($value);
 
-		if($this->isNewRecord)
-			$exists=$this->exexists($criteria);
-		else
-		{
-			$criteria->limit=2;
-			$objects=$this->findAll($criteria);
-			$n=count($objects);
-			if($n===1)
-			{
-			// need to exclude the current record based on PK
-                            $exists=array_shift($objects)->getPrimaryKey()!=$this->getOldPrimaryKey();
-			}
-			else
-				$exists=$n>1;
-		}
+    public function rules() {
+        return array(
+            array('Name,int_ip_s,mask,password', 'required'),
+            array('Name', 'unique'),
+            array('Name', 'length', 'max' => 15, 'min' => 4),
+            array('int_ip_s', 'match', 'pattern' => '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
+            array('int_ip_s', 'UniqueIpS'),
+            array('password', 'length', 'max' => 24, 'min' => 4),
+            array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
+            array('Name, mask, mac, flags, password', 'safe', 'on' => 'search'),
+        );
+    }
 
-		if($exists)
-		{
-                    $message='{attr} "{value}" уже занят';
-                    $this->addError($attr,strtr($message,array(
-                        '{value}'=>CHtml::encode($value),
-                        '{attr}'=>$this->getAttributeLabel($attr))));
-                    }
+    public function UniqueIpS($attr, $param) {
+        $value = $this->$attr;
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("int_ip=:p1");
+        $criteria->params[':p1'] = ip2long($value);
+
+        if ($this->isNewRecord)
+            $exists = $this->exexists($criteria);
+        else {
+            $criteria->limit = 2;
+            $objects = $this->findAll($criteria);
+            $n = count($objects);
+            if ($n === 1) {
+                // need to exclude the current record based on PK
+                $exists = array_shift($objects)->getPrimaryKey() != $this->getOldPrimaryKey();
             }
+            else
+                $exists = $n > 1;
         }
 
-        /**
+        if ($exists) {
+            $message = '{attr} "{value}" уже занят';
+            $this->addError($attr, strtr($message, array(
+                '{value}' => CHtml::encode($value),
+                '{attr}' => $this->getAttributeLabel($attr))));
+        }
+    }
+
+    /**
 	 * @return array relational rules.
 	 */
 	public function relations()
@@ -118,6 +117,7 @@ class Hostip extends CActiveRecord
 			'PersonId' => 'Person',
 			'flags' => 'Флаги',
 			'password' => 'Пароль',
+                        'flag_block' => 'Блокировка',
 		);
 	}
 
