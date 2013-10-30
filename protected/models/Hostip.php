@@ -1,22 +1,7 @@
 <?php
 
 /**
- * This is the model class for table "hostip".
- *
- * The followings are the available columns in table 'hostip':
- * @property integer $id
- * @property string $Name
- * @property string $int_ip
- * @property string $ext_ip
- * @property integer $mask
- * @property string $mac
- * @property integer $PersonId
- * @property string $flags
- * @property string $password
- * @property string $inact_timeout
- * @property string $status
- * @property string $ch_status
- */
+  */
 class Hostip extends CActiveRecord
 {
 	/**
@@ -30,24 +15,33 @@ class Hostip extends CActiveRecord
         
         public function __get($name) {
             if ($name=='int_ip_s') return long2ip ($this->int_ip);
-            if ($name=='flag_block') return preg_match('/A/',$this->flags);
+            if ($name=='flag_block') return preg_match('/D/',$this->flags);
+            if ($name=='traf_filter') return preg_replace('/[^XYZ]/','',$this->flags);
             return parent::__get($name);
         }
         
         public function __isset($name) {
             if ($name=='int_ip_s') return true;
             if ($name=='flag_block') return true;
-            else return parent::__isset($name);
+            if ($name=='traf_filter') return true;
+            return parent::__isset($name);
         }
         
         public function __set($name,$value) {
-            if ($name=='int_ip_s') $this->int_ip = ip2long ($value);
-            if ($name=='flag_block') {
-                if ($value) {
-                    if (!preg_match('/A/',$this->flags))  $this->flags.='A';
-                } else $this->flags = preg_replace ('/A/', '',$this->flags );
+            switch($name) {
+                case 'int_ip_s':
+                    $this->int_ip = ip2long ($value);
+                    return;
+                case 'flag_block':
+                    $tmps=preg_replace ('/D/', '',$this->flags);
+                    $this->flags = $value ? $tmps.'D' : $tmps;
+                    return;
+                case 'traf_filter':
+                    $this->flags = preg_replace ('/[XYZ]/', '',$this->flags).$value;
+                    return;
+                default:
+                    return parent::__set($name,$value);
             }
-            else return parent::__set($name,$value);
         }
 
 
@@ -60,6 +54,8 @@ class Hostip extends CActiveRecord
             array('int_ip_s', 'UniqueIpS'),
             array('password', 'length', 'max' => 24, 'min' => 4),
             array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
+            array('flag_block','boolean'),
+            array('traf_filter','safe'),
             array('Name, mask, mac, flags, password', 'safe', 'on' => 'search'),
         );
     }
@@ -118,6 +114,7 @@ class Hostip extends CActiveRecord
 			'flags' => 'Флаги',
 			'password' => 'Пароль',
                         'flag_block' => 'Блокировка',
+                        'traf_filter' => 'Фильтр трафика',
 		);
 	}
 

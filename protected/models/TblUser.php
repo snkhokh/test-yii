@@ -27,11 +27,12 @@ class TblUser extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, email', 'required'),
+			array('username', 'unique'),
+			array('username, password', 'required'),
 			array('username, password, email', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, username, password, email', 'safe', 'on'=>'search'),
+			array('username, password, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,9 +53,8 @@ class TblUser extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'username' => 'Username',
-			'password' => 'Password',
+			'username' => 'Учетное имя',
+			'password' => 'Пароль',
 			'email' => 'Email',
 		);
 	}
