@@ -3,16 +3,15 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Tax Rates',
+	'Все трафик-планы',
 );
 
 $this->menu=array(
-	array('label'=>'Create TaxRates', 'url'=>array('create')),
-	array('label'=>'Manage TaxRates', 'url'=>array('admin')),
+	array('label'=>'Создать новый', 'url'=>array('create')),
 );
 ?>
 
-<h1>Tax Rates</h1>
+<h2>Трафик-планы</h2>
 
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,

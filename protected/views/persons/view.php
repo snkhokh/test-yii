@@ -20,7 +20,7 @@ $this->menu=array(
 		'Name',
 		'FIO',
 		'EMail',
-		'taxs.Name:text:Тарифный план',
+		'taxs.Name:text:Трафик-план',
 		'PrePayedUnits',
 		'Flags',
 		'Opt',

@@ -31,6 +31,7 @@
 			'items'=>array(
 				array('label'=>'Абоненты', 'url'=>array('/persons'),'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Хосты', 'url'=>array('/hostip'),'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Трафик-Планы', 'url'=>array('/taxRates'),'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Админы', 'url'=>array('/tblUser'),'visible'=>(Yii::app()->user->name == 'admin')),
 				array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)

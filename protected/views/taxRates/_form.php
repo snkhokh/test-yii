@@ -15,7 +15,7 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note">Поля, отмеченные <span class="required">*</span> обязательны для заполнения.</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -38,8 +38,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'dir'); ?>
-		<?php echo $form->checkBoxList($model,'dir',array('in'=>'Входящий','out'=>'Исходящий'),array(
+                <?php echo $form->labelEx($model,'dir'); ?>
+		<?php $model->dir = explode(',',$model->dir);
+                      echo $form->checkBoxList($model,'dir',array('in'=>'Входящий','out'=>'Исходящий'),array(
                     'separator'=>' ','labelOptions'=>array('style'=>'display:inline'),
                 )); ?>
 		<?php echo $form->error($model,'dir'); ?>
@@ -47,7 +48,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'flag'); ?>
-		<?php echo $form->dropDownList($model,'flag',array('norm'=>'Не наш случай','day_limit'=>'Лимит на день',
+		<?php echo $form->dropDownList($model,'flag',array('day_limit'=>'Лимит на день',
                     'mon_limit'=>'Лимит на месяц','just_count'=>'Только учет')); ?>
 		<?php echo $form->error($model,'flag'); ?>
 	</div>

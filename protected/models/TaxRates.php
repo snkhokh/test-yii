@@ -14,7 +14,7 @@ class TaxRates extends CActiveRecord
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
+       public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
@@ -48,11 +48,11 @@ class TaxRates extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'Name' => 'Name',
-			'TrafUnit' => 'Traf Unit',
-			'PrePayedUnits' => 'Pre Payed Units',
-			'dir' => 'Dir',
-			'flag' => 'Flag',
+			'Name' => 'Наименование плана',
+			'TrafUnit' => 'Единица трафика (байт)',
+			'PrePayedUnits' => 'Плановый лимит единиц',
+			'dir' => 'Учитываемые потоки',
+			'flag' => 'Тип предоставления',
 		);
 	}
 
