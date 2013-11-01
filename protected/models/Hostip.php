@@ -1,49 +1,43 @@
 <?php
 
 /**
+ * @property boolean $flag_block 
   */
 class Hostip extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
+         *
 	 */
 	public function tableName()
 	{
 		return 'hostip';
 	}
         
-        
-        public function __get($name) {
-            if ($name=='int_ip_s') return long2ip ($this->int_ip);
-            if ($name=='flag_block') return preg_match('/D/',$this->flags);
-            if ($name=='traf_filter') return preg_replace('/[^XYZ]/','',$this->flags);
-            return parent::__get($name);
+        public function getint_ip_s (){
+            return long2ip ($this->int_ip);
         }
-        
-        public function __isset($name) {
-            if ($name=='int_ip_s') return true;
-            if ($name=='flag_block') return true;
-            if ($name=='traf_filter') return true;
-            return parent::__isset($name);
-        }
-        
-        public function __set($name,$value) {
-            switch($name) {
-                case 'int_ip_s':
-                    $this->int_ip = ip2long ($value);
-                    return;
-                case 'flag_block':
-                    $tmps=preg_replace ('/D/', '',$this->flags);
-                    $this->flags = $value ? $tmps.'D' : $tmps;
-                    return;
-                case 'traf_filter':
-                    $this->flags = preg_replace ('/[XYZ]/', '',$this->flags).$value;
-                    return;
-                default:
-                    return parent::__set($name,$value);
-            }
+        public function setint_ip_s($value){
+            $this->int_ip = ip2long ($value);
         }
 
+        public function getflag_block(){
+            return preg_match('/D/',$this->flags);
+        }
+
+        public function setflag_block($value){
+            $tmps=preg_replace ('/D/', '',$this->flags);
+            $this->flags = $value ? $tmps.'D' : $tmps;
+        }
+
+        public function gettraf_filter(){
+            return preg_replace('/[^XYZ]/','',$this->flags);
+        }
+
+        public function settraf_filter($value){
+           $this->flags = preg_replace ('/[XYZ]/', '',$this->flags).$value;
+        }
+        
 
     public function rules() {
         return array(
@@ -93,8 +87,6 @@ class Hostip extends CActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
                     'person'=>array(self::BELONGS_TO, 'Persons', 'PersonId')
 		);
@@ -158,7 +150,7 @@ class Hostip extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Hostip the static model class
+         * @return Hostip the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
