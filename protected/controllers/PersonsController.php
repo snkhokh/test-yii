@@ -105,12 +105,13 @@ class PersonsController extends Controller
                 $model=$this->loadModel($id);
                 if(count($model->hosts) > 0) {
                     $msg = 'У абонента есть хосты, удаление невозможно!';
-                    
+                    Yii::app()->user->setFlash('error', $msg);
+                    $this->redirect(array('view','id'=>$id));
                 } else $model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : '');
 	}
 
 	/**
