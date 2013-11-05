@@ -61,7 +61,7 @@ class Hostip extends CActiveRecord
         $criteria->params[':p1'] = ip2long($value);
 
         if ($this->isNewRecord)
-            $exists = $this->exexists($criteria);
+            $exists = $this->exists($criteria);
         else {
             $criteria->limit = 2;
             $objects = $this->findAll($criteria);

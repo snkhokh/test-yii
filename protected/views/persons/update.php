@@ -9,13 +9,15 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Persons', 'url'=>array('index')),
-	array('label'=>'Create Persons', 'url'=>array('create')),
-	array('label'=>'View Persons', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Persons', 'url'=>array('admin')),
+	array('label'=>'Перейти к его хостам', 'url'=>array('hostip/persindex','id'=>$model->id)),
+	array('label'=>'Удалить этого', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Абонент "'.$model->Name.'" будет удален. Вы уверены ?')),
+	array('label'=>'Создать ему новый хост', 'url'=>array('hostip/create','pid'=>$model->id)),
+	array('label'=>'Создать нового абонента', 'url'=>array('create')),
+        array('label'=>'Все абоненты', 'url'=>array('index')),
+	array('label'=>'Все хосты', 'url'=>array('hostip/index')),
 );
 ?>
 
-<h2>Редактирование данных абонента <?php echo $model->Name." (id:".$model->id.")"; ?></h2>
+<h2>Редактирование данных абонента <?php echo '"'.$model->Name.'"'; ?></h2>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

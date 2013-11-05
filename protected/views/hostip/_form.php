@@ -43,12 +43,6 @@
 		<?php echo $form->error($model,'mac'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'PersonId'); ?>
-		<?php echo $form->textField($model,'PersonId'); ?>
-		<?php echo $form->error($model,'PersonId'); ?>
-	</div>
-
 	 <div class="row">
 		<?php echo $form->labelEx($model,'flag_block'); ?>
 		<?php echo $form->checkBox($model,'flag_block'); ?>

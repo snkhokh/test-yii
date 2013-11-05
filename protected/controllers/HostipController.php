@@ -51,9 +51,14 @@ class HostipController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($pid)
 	{
-		$model=new Hostip;
+            $person = Persons::model()->findByPk($pid);
+            if($person===null)
+                throw new CHttpException(404,'Запрошенного ресурса не существует.');
+
+            $model=new Hostip;
+             $model->PersonId = $person->id;   
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -61,8 +66,11 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()) {
+                            Flags::model()->ServerReload();
+                            $this->redirect(array('persindex','id'=>$model->PersonId));
+                            
+                        }
 		}
 
 		$this->render('create',array(
@@ -85,8 +93,11 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()) {
+                            Flags::model()->ServerReload();
+                            $this->redirect(array('persindex','id'=>$model->PersonId));
+                        
+                        }
 		}
 
 		$this->render('update',array(
@@ -101,11 +112,16 @@ class HostipController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+            $target = $this->loadModel($id);
+            $pid = $target->PersonId;
+            $target->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		if(!isset($_GET['ajax'])) {
+                    Flags::model()->ServerReload();
+                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('persindex','id'=>$pid));
+
+                }
 	}
 
 	/**
@@ -125,14 +141,15 @@ class HostipController extends Controller
 
 	public function actionPersIndex($id)
 	{
-		$rec = Hostip::model()->with('person')->find('PersonId = :id',array(':id'=>$id));
-                $person = (isset($rec->person->Name)) ? $rec->person->Name : '';
+		$rec = Persons::model()->findByPk($id);
+                $person = (isset($rec->Name)) ? $rec->Name : '';
                 $dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
                     array('condition' => 'PersonId = '.$id),
                     'pagination'=>array('pageSize'=>20),));
 		$this->render('persindex',array(
                     'dataProvider'=>$dataProvider,
                     'person'=>$person,
+                    'pid'=>$id,
 		));
 	}
 	/**

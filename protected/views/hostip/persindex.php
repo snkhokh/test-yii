@@ -4,16 +4,17 @@
 
 $this->breadcrumbs=array(
 	'Все хосты'=>array('index'),
-	'Manage',
+	'Хосты абонента "'.$person.'"',
 );
 
 $this->menu=array(
-	array('label'=>'Создать хост', 'url'=>array('create')),
+	array('label'=>'Данные абонента', 'url'=>array('persons/view','id'=>$pid)),
+	array('label'=>'Создать новый хост', 'url'=>array('create','pid'=>$pid)),
 );
 
 ?>
 
-<h2>Хосты абонента <?php echo $person ?></h2>
+<h2>Хосты абонента <?php echo '"'.$person.'"' ?></h2>
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,

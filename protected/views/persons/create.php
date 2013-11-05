@@ -8,11 +8,11 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Persons', 'url'=>array('index')),
-	array('label'=>'Manage Persons', 'url'=>array('admin')),
+        array('label'=>'Все абоненты', 'url'=>array('index')),
+	array('label'=>'Все хосты', 'url'=>array('hostip/index')),
 );
 ?>
 
-<h1>Create Persons</h1>
+<h2>Новый абонент системы учета трафика</h2>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

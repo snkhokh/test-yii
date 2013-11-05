@@ -27,7 +27,7 @@ class PersonsController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow', 
+			array('allow',
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -101,17 +101,14 @@ class PersonsController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		
-                $model=$this->loadModel($id);
-                if(count($model->hosts) > 0) {
-                    $msg = 'У абонента есть хосты, удаление невозможно!';
-                    Yii::app()->user->setFlash('error', $msg);
-                    $this->redirect(array('view','id'=>$id));
-                } else $model->delete();
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : '');
+            $model=$this->loadModel($id);
+            if(count($model->hosts) > 0) {
+                $msg = 'У абонента есть хосты, удаление невозможно!';
+                Yii::app()->user->setFlash('error', $msg);
+                return $this->redirect(array('view','id'=>$id));
+            }
+            $model->delete();
+            $this->redirect(array('persons/index'));
 	}
 
 	/**
@@ -132,13 +129,13 @@ class PersonsController extends Controller
                     'desc'=>'count(hosts.id) DESC',
                     'label'=>'Количество хостов'),
                     'Name','FIO','PrePayedUnits',)
-                    
+
                 ),
                 'pagination'=>array(
                     'pageSize'=> 20,
                 )
                 ));
-            
+
             $this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
