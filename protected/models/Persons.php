@@ -24,7 +24,7 @@ class Persons extends CActiveRecord
 			array('Opt', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id,Name, FIO, EMail, Bill, PrePayedUnits, Flags, Opt', 'safe', 'on'=>'search'),
+			array('Name, FIO, EMail, PrePayedUnits, hostcount', 'safe', 'on'=>'search'),
 		);
 	}
 	public function relations()

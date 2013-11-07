@@ -116,13 +116,26 @@ class PersonsController extends Controller
 	 */
 	public function actionIndex()
 	{
+            $model=new Persons('search');
+            $model->unsetAttributes();  // clear any default values
+            if(isset($_GET['Persons']))
+                    $model->attributes=$_GET['Persons'];
+
+
             $criteria = new CDbCriteria;
             $criteria -> with = array('hosts');
             $criteria -> select = '*,count(hosts.id) AS hostcount';
             $criteria -> group = 'hosts.PersonId';
             $criteria -> together =true;
-            $model =  Persons::model();
-            //$criteria ->compare('hostcount', $model->hostcount,true);
+
+            $criteria->compare('t.Name',$model->Name,true);
+            $criteria->compare('t.FIO',$model->FIO,true);
+            $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);
+            if ($model->hostcount) {
+                $criteria->having = 'count(hosts.id) = :hcnt';
+                $criteria->params['hcnt'] = $model->hostcount;
+            }
+
             $dataProvider=new CActiveDataProvider($model,array('criteria' => $criteria,
                 'sort'=>array('attributes'=>array('hostcount'=>array(
                     'asc'=>'count(hosts.id)',
@@ -142,28 +155,6 @@ class PersonsController extends Controller
 		));
 	}
 
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Persons('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Persons']))
-			$model->attributes=$_GET['Persons'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return Persons the loaded model
-	 * @throws CHttpException
-	 */
 	public function loadModel($id)
 	{
 		$model=Persons::model()->findByPk($id);
