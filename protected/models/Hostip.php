@@ -38,6 +38,7 @@ class Hostip extends CActiveRecord
            $this->flags = preg_replace ('/[XYZ]/', '',$this->flags).$value;
         }
         
+        public $PName;
 
     public function rules() {
         return array(
@@ -50,7 +51,7 @@ class Hostip extends CActiveRecord
             array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
             array('flag_block','boolean'),
             array('traf_filter','safe'),
-            array('Name, mask, mac, flags, password', 'safe', 'on' => 'search'),
+            array('Name, int_ip, mac, flag_block, PName', 'safe', 'on' => 'search'),
         );
     }
 

@@ -129,9 +129,23 @@ class HostipController extends Controller
 	 */
 	public function actionIndex()
 	{
-                $model = Hostip::model()->with('person');
+                $model = new Hostip('search');
+                $model->unsetAttributes();
+                if(isset($_GET['Hostip']))
+                    $model->attributes=$_GET['Hostip'];
+                
+                $criteria = new CDbCriteria(array(
+                    'with'=>'person',
+                    'together'=>true,
+                    ));
+                $criteria->compare('CONCAT_WS(\'/\',inet_NTOA(int_ip),mask)', $model->int_ip,true);
+                $criteria->compare('t.Name', $model->Name,true);
+                $criteria->compare('person.Name', $model->PName,true);
+                
+                
                 $dataProvider=new CActiveDataProvider($model,array(
-                    'sort'=>array('attributes'=>array('person.Name','Name','int_ip','mac','flags')),
+                    'criteria'=>$criteria,
+                    'sort'=>array('attributes'=>array('PName'=>'person.Name','Name','int_ip','mac','flags')),
                     'pagination'=>array('pageSize'=>20),
                 ));
 		$this->render('index',array(
@@ -153,21 +167,6 @@ class HostipController extends Controller
                     'pid'=>$id,
 		));
 	}
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Hostip('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Hostip']))
-			$model->attributes=$_GET['Hostip'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-	}
-
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.

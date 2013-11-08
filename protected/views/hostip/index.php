@@ -25,11 +25,10 @@ $this->menu=array(
 		'mac::MAC адрес',
 		'flag_block:boolean',
                 array('header'=>'Абонент',
-                    'name'=>'person.Name',
+                    'name'=>'PName',
                     'type'=>'html',
                     'value'=>  'isset($data->person->id) ? CHtml::link($data->person->Name,Yii::app()->createUrl("/persons/view",
                     array("id"=>$data->person->id))):""',
-                    'filter'=>'<input type="text" maxlength="50" name="Hostip[PName]">',
                     ),
 	),
 )); ?>
