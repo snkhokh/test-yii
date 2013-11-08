@@ -141,12 +141,12 @@ class PersonsController extends Controller
                     'asc'=>'count(hosts.id)',
                     'desc'=>'count(hosts.id) DESC',
                     'label'=>'Количество хостов'),
-                    'Name','FIO','PrePayedUnits',)
-
+                    'Name','FIO','PrePayedUnits',),
+                    'defaultOrder'=>'t.Name',
                 ),
                 'pagination'=>array(
                     'pageSize'=> 20,
-                )
+                ),
                 ));
 
             $this->render('index',array(

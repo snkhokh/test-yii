@@ -145,9 +145,10 @@ class HostipController extends Controller
                 
                 $dataProvider=new CActiveDataProvider($model,array(
                     'criteria'=>$criteria,
-                    'sort'=>array('attributes'=>array('PName'=>'person.Name','Name','int_ip','mac','flags')),
+                    'sort'=>array('attributes'=>array('PName'=>'person.Name','Name','int_ip','mac','flags'),
+                        'defaultOrder'=>'int_ip',),
                     'pagination'=>array('pageSize'=>20),
-                ));
+                                    ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
                         'model'=>$model,
