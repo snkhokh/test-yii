@@ -79,7 +79,20 @@ return array(
 			),
 		),
 	),
-
+//        'clientScript' => array(
+//            'packages' => array(
+//                'tableForm'=> array(
+//                    'baseUrl' => '/js/jquery/',
+//                    'js' => 'jquery.tableForm.js',
+//                    'depends' => array('jquery','jform'),
+//                ),
+//                'jform'=> array(
+//                    'baseUrl' => '/js/jquery/',
+//                    'js'=>'jquery.form.js',
+//                    'depends'=> array('jquery')
+//                )
+//            ),
+//        ),
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
 	'params'=>array(
