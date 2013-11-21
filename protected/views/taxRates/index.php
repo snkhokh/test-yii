@@ -1,6 +1,7 @@
 <?php
 /* @var $this TaxRatesController */
 /* @var $dataProvider CActiveDataProvider */
+Yii::app()->clientScript->registerCoreScript('tableForm');
 
 $this->breadcrumbs=array(
 	'Все трафик-планы',

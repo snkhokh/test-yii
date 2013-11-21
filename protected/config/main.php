@@ -37,7 +37,22 @@ return array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
-		// uncomment the following to enable URLs in path-format
+        'clientScript' => array(
+            'packages' => array(
+                'tableForm'=> array(
+                    'baseUrl' => 'js/jquery/',
+                    'js' => array('jquery.tableForm.js'),
+                    'depends' => array('jquery','jform'),
+                ),
+                'jform'=> array(
+                    'baseUrl' => 'js/jquery/',
+                    'js'=>array('jquery.form.js'),
+                    'depends'=> array('jquery')
+                )
+            ),
+        ),
+
+            // uncomment the following to enable URLs in path-format
 		/*
 		'urlManager'=>array(
 			'urlFormat'=>'path',
@@ -79,21 +94,7 @@ return array(
 			),
 		),
 	),
-//        'clientScript' => array(
-//            'packages' => array(
-//                'tableForm'=> array(
-//                    'baseUrl' => '/js/jquery/',
-//                    'js' => 'jquery.tableForm.js',
-//                    'depends' => array('jquery','jform'),
-//                ),
-//                'jform'=> array(
-//                    'baseUrl' => '/js/jquery/',
-//                    'js'=>'jquery.form.js',
-//                    'depends'=> array('jquery')
-//                )
-//            ),
-//        ),
-	// application-level parameters that can be accessed
+       	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
