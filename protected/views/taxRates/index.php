@@ -13,8 +13,12 @@ $this->menu=array(
 ?>
 
 <h2>Трафик-планы</h2>
-
-<?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+<table class="list">
+    
+<?php foreach ($dataProvider->getData() as $row) {?>
+    <tr class="odd">
+    <td><?php echo $row->Name ?></td>
+    <td><?php echo $row->descr?></td>
+</tr>
+<?php } ?>
+</table>
