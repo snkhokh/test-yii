@@ -22,6 +22,7 @@ class Persons extends CActiveRecord
 			array('PrePayedUnits', 'length', 'max'=>10),
 			array('Flags', 'length', 'max'=>5),
 			array('Opt', 'safe'),
+                        array('TaxRateId','exist','attributeName'=>'id','className'=>'TaxRates'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('Name, FIO, EMail, PrePayedUnits, hostcount', 'safe', 'on'=>'search'),
