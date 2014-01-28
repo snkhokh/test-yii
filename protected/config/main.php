@@ -68,9 +68,9 @@ return array(
 		), */
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=yii-test',
+			'connectionString' => 'mysql:host=10.128.1.1;dbname=traf_test',
 			'emulatePrepare' => true,
-			'username' => 'root',
+			'username' => 'traf',
 			'password' => '',
 			'charset' => 'utf8',
 		),
