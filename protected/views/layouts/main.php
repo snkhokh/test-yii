@@ -27,16 +27,25 @@
 	</div><!-- header -->
 
 	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
+		<?php
+                $this->widget('application.extensions.emenu.EMenu',array('theme'=>'vimeo',
 			'items'=>array(
 				array('label'=>'Абоненты', 'url'=>array('/persons'),'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Хосты', 'url'=>array('/hostip'),'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Трафик-Планы', 'url'=>array('/taxRates'),'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Админы', 'url'=>array('/tblUser'),'visible'=>(Yii::app()->user->name == 'admin')),
+				array('label'=>'Конфигурация','url'=>'#','vertical'=>true,
+                                    'items'=> array(
+                                        array('label'=>'Админы', 'url'=>array('/tblUser'),'visible'=>(Yii::app()->user->name == 'admin')),
+                                        array('label'=>'Сервера NAS', 'url'=>array('/tblUser'),'visible'=>(Yii::app()->user->name == 'admin'))
+                                        )),
 				array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
-		)); ?>
+		));
+     
+                
+                
+                ?>
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
