@@ -128,8 +128,10 @@ class PersonsController extends Controller
             $criteria -> group = 'hosts.PersonId';
             $criteria -> together =true;
 
-            $criteria->compare('t.Name',$model->Name,true);
-            $criteria->compare('t.FIO',$model->FIO,true);
+//  TODO возможность переключения режима поиска - регистрозависимый/независимый...
+            
+            $criteria->addSearchCondition('t.Name',$model->Name,true,'AND','COLLATE utf8_general_ci LIKE');
+            $criteria->addSearchCondition('t.FIO',$model->FIO,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);
             if ($model->hostcount) {
                 $criteria->having = 'count(hosts.id) = :hcnt';
