@@ -49,7 +49,7 @@
 					
 				if(e.target.tagName == 'TD')
 				{
-					// @todo (rponudic) Make this a setting?
+					//<<<<< (rponudic) Make this a setting?
 					if(e.target.cellIndex < 4)
 						return;
 

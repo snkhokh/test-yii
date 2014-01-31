@@ -67,7 +67,7 @@ ul.dropdown {
 	 text-transform: none;
 	 filter: alpha(opacity=90);
 	 -moz-opacity: .9;
-	 KhtmlOpacity: .9;
+	 /*KhtmlOpacity: .9;*/
 	 opacity: .9;
 	}
 

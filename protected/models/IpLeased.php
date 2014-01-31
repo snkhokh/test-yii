@@ -1,33 +1,43 @@
 <?php
 
-
-class TaxRates extends CActiveRecord
+/**
+ * This is the model class for table "ip_leased".
+ *
+ * The followings are the available columns in table 'ip_leased':
+ * @property integer $ip
+ * @property string $pool_id
+ * @property string $sess_id
+ * @property string $locked
+ * @property integer $ttl
+ */
+class IpLeased extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
+        /**
+         * @return string the associated database table name
+         */
 	public function tableName()
 	{
-		return 'tax_rates';
+		return 'ip_leased';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-       public function rules()
+	public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('Name', 'length', 'max'=>50),
-			array('TrafUnit, PrePayedUnits, flag', 'length', 'max'=>10),
-			array('dir', 'filter','filter'=>array($this,'impDir')),
-			array('id, Name, TrafUnit, PrePayedUnits, dir, flag', 'safe', 'on'=>'search'),
+			array('ip, pool_id, sess_id, ttl', 'required'),
+			array('ip, ttl', 'numerical', 'integerOnly'=>true),
+			array('pool_id', 'length', 'max'=>11),
+			array('sess_id', 'length', 'max'=>10),
+			array('locked', 'safe'),
+
+                        array('ip, pool_id, sess_id, locked, ttl', 'safe', 'on'=>'search'),
 		);
 	}
-        public function impDir($a) {
-            return implode(',', $a);
-        }
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -36,7 +46,6 @@ class TaxRates extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'persons'=>array(self::HAS_MANY, 'Persons', 'TaxRateId'),
 		);
 	}
 
@@ -46,11 +55,11 @@ class TaxRates extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'Name' => 'Наименование плана',
-			'TrafUnit' => 'Единица трафика (байт)',
-			'PrePayedUnits' => 'Плановый лимит единиц',
-			'dir' => 'Учитываемые потоки',
-			'flag' => 'Тип предоставления',
+			'ip' => 'Ip',
+			'pool_id' => 'Pool',
+			'sess_id' => 'Sess',
+			'locked' => 'Locked',
+			'ttl' => 'Ttl',
 		);
 	}
 
@@ -68,14 +77,14 @@ class TaxRates extends CActiveRecord
 	 */
 	public function search()
 	{
+
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('Name',$this->Name,true);
-		$criteria->compare('TrafUnit',$this->TrafUnit,true);
-		$criteria->compare('PrePayedUnits',$this->PrePayedUnits,true);
-		$criteria->compare('dir',$this->dir,true);
-		$criteria->compare('flag',$this->flag,true);
+		$criteria->compare('ip',$this->ip);
+		$criteria->compare('pool_id',$this->pool_id,true);
+		$criteria->compare('sess_id',$this->sess_id,true);
+		$criteria->compare('locked',$this->locked,true);
+		$criteria->compare('ttl',$this->ttl);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -86,7 +95,7 @@ class TaxRates extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return TaxRates the static model class
+	 * @return IpLeased the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

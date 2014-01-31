@@ -34,8 +34,6 @@ class IpPools extends CActiveRecord
 			array('nas_id', 'length', 'max'=>10),
 			array('first, number', 'length', 'max'=>11),
 			array('name', 'length', 'max'=>40),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
 			array('id, nas_id, first, number, ttl, name', 'safe', 'on'=>'search'),
 		);
 	}
@@ -48,6 +46,8 @@ class IpPools extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+                    'nas_id'=>array(self::BELONGS_TO,'Nas','id'),
+                    'id'=>array(self::HAS_MANY,'IpLeased','pool_id'),
 		);
 	}
 
@@ -80,7 +80,6 @@ class IpPools extends CActiveRecord
 	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
