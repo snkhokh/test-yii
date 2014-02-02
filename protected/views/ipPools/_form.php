@@ -19,16 +19,16 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'nas_id'); ?>
-		<?php echo $form->textField($model,'nas_id',array('size'=>10,'maxlength'=>10)); ?>
+        <div class="row">
+	        <?php echo $form->labelEx($model,'nas_id'); ?>
+		<?php echo $form->dropDownList($model,'nas_id',CHtml::listData(Nas::model()->findAll(),'id','name')); ?>
 		<?php echo $form->error($model,'nas_id'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'first'); ?>
-		<?php echo $form->textField($model,'first',array('size'=>11,'maxlength'=>11)); ?>
-		<?php echo $form->error($model,'first'); ?>
+		<?php echo $form->labelEx($model,'first_s'); ?>
+		<?php echo $form->textField($model,'first_s',array('size'=>15,'maxlength'=>15)); ?>
+		<?php echo $form->error($model,'first_s'); ?>
 	</div>
 
 	<div class="row">
@@ -48,7 +48,7 @@
 		<?php echo $form->textField($model,'name',array('size'=>40,'maxlength'=>40)); ?>
 		<?php echo $form->error($model,'name'); ?>
 	</div>
-
+        
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

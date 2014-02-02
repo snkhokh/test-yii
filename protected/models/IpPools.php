@@ -21,33 +21,62 @@ class IpPools extends CActiveRecord
 		return 'ip_pools';
 	}
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
+        public function getfirst_s (){
+            return long2ip ($this->first);
+        }
+        public function setfirst_s($value){
+            $this->first = ip2long ($value);
+        }
+
+        public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('nas_id, first, number', 'required'),
-			array('ttl', 'numerical', 'integerOnly'=>true),
-			array('nas_id', 'length', 'max'=>10),
-			array('first, number', 'length', 'max'=>11),
-			array('name', 'length', 'max'=>40),
+			array('first_s,number,ttl,name', 'required'),
+			array('number', 'numerical', 'integerOnly'=>true,'min'=>2,'max'=>256),
+			array('ttl', 'numerical', 'integerOnly'=>true,'min'=>60,'max'=>3600),
+                        array('first_s', 'pullTest'),
+			array('name', 'unique'),
+                        array('name', 'length', 'max' => 40),
 			array('id, nas_id, first, number, ttl, name', 'safe', 'on'=>'search'),
 		);
 	}
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
+        public function pullTest($attr, $param)
+        {
+            $value = $this->first;
+            if (! $value) {
+                $message = 'Недействительный {attr}';
+                $this->addError($attr, strtr($message, array(
+                    '{attr}' => $this->getAttributeLabel($attr))));
+                return;
+            }
+// проверка пересечения с другими пулами
+            if ($this->number) {
+                $criteria = new CDbCriteria();
+                $criteria->addCondition("first BETWEEN :p1 AND :p2");
+                $criteria->params[':p1'] = $value;
+                $criteria->params[':p2'] = $value+$this->number-1;
+                $criteria->limit = 2;
+                $criteria->order = 'first';
+                $objects = $this->findAll($criteria);
+                if (count($objects) && !$this->isNewRecord && ($objects[0]->getPrimaryKey() == $this->getOldPrimaryKey())) array_shift($objects);
+                if (count($objects)) {
+                    $message = 'Пересеченире с другим пулом {ip}+{numb}';
+                    $this->addError($attr, strtr($message, array(
+                        '{ip}' => long2ip($objects[0]->first),
+                        '{numb}' => $objects[0]->number)));
+                    return;
+                }
+            }
+        }
+
+        public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'nas_id'=>array(self::BELONGS_TO,'Nas','id'),
-                    'id'=>array(self::HAS_MANY,'IpLeased','pool_id'),
+                    'nas'=>array(self::BELONGS_TO,'Nas','nas_id'),
+                    'leased'=>array(self::HAS_MANY,'IpLeased','pool_id'),
 		);
 	}
 
@@ -57,27 +86,14 @@ class IpPools extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'nas_id' => 'Nas',
-			'first' => 'First',
-			'number' => 'Number',
-			'ttl' => 'Ttl',
-			'name' => 'Name',
+			'nas_id' => 'Сервер доступа',
+			'first_s' => 'Начальный IP адрес',
+			'number' => 'Количество адресов',
+			'ttl' => 'Время блокировки адреса',
+			'name' => 'Наименование пула',
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
 	public function search()
 	{
 
