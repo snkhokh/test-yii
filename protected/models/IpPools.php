@@ -54,18 +54,47 @@ class IpPools extends CActiveRecord
             if ($this->number) {
                 $criteria = new CDbCriteria();
                 $criteria->addCondition("first BETWEEN :p1 AND :p2");
-                $criteria->params[':p1'] = $value;
-                $criteria->params[':p2'] = $value+$this->number-1;
+                $criteria->addCondition(":p1 BETWEEN first AND first+number-1",'OR');
+                $criteria->params=array(':p1' => $value,':p2' => $value+$this->number-1);
                 $criteria->limit = 2;
                 $criteria->order = 'first';
                 $objects = $this->findAll($criteria);
                 if (count($objects) && !$this->isNewRecord && ($objects[0]->getPrimaryKey() == $this->getOldPrimaryKey())) array_shift($objects);
                 if (count($objects)) {
-                    $message = 'Пересеченире с другим пулом {ip}+{numb}';
+                    $message = 'Пересеченире с другим пулом {ip1} - {ip2} ({numb})';
                     $this->addError($attr, strtr($message, array(
-                        '{ip}' => long2ip($objects[0]->first),
+                        '{ip1}' => long2ip($objects[0]->first),
+                        '{ip2}' => long2ip($objects[0]->first+$objects[0]->number-1),
                         '{numb}' => $objects[0]->number)));
                     return;
+                }
+            }
+            // проверка пересечения со статикой
+            {
+                $criteria = new CDbCriteria();
+                $criteria->addCondition("int_ip BETWEEN :p1 AND :p2");
+                $criteria->addCondition("int_ip < :p1 AND mask < 32",'OR');
+//                $criteria->compare("dynamic","<>:1");
+                $criteria->order='int_ip desc';
+                $criteria->params=array(':p1' => $value,':p2' => $value+$this->number-1);
+                $criteria->limit = 1;
+                $objects = Hostip::model()->findAll($criteria);
+                if (count($objects)) {
+                    if ($objects[0]->mask == 32) {
+                        $message = 'Пересеченире со статическим адресом {ip}';
+                        $this->addError($attr, strtr($message, array(
+                            '{ip}' => long2ip($objects[0]->int_ip),
+                            )));
+                        return;
+                    } else $r_edge = $objects[0]->int_ip+pow(2,32-$objects[0]->mask);
+                    if ($value < $r_edge ) {
+                        $message = 'Пересеченире со статической подсетью {ip}/{mask}';
+                        $this->addError($attr, strtr($message, array(
+                            '{ip}' => long2ip($objects[0]->int_ip),
+                            '{mask}' => $objects[0]->mask,
+                            )));
+                        return;
+                    }
                 }
             }
         }
@@ -88,6 +117,7 @@ class IpPools extends CActiveRecord
 		return array(
 			'nas_id' => 'Сервер доступа',
 			'first_s' => 'Начальный IP адрес',
+			'first' => 'Начальный IP адрес',
 			'number' => 'Количество адресов',
 			'ttl' => 'Время блокировки адреса',
 			'name' => 'Наименование пула',

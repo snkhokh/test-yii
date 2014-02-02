@@ -3,16 +3,8 @@
 /* @var $model IpPools */
 
 $this->breadcrumbs=array(
-	'Ip Pools'=>array('index'),
-	'Create',
+	'Пулы IP адресов'=>array('admin'),
+	'Создать новый пул',
 );
 
-$this->menu=array(
-	array('label'=>'List IpPools', 'url'=>array('index')),
-	array('label'=>'Manage IpPools', 'url'=>array('admin')),
-);
-?>
-
-<h1>Create IpPools</h1>
-
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+$this->renderPartial('_form', array('model'=>$model)); ?>
