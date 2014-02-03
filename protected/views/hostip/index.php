@@ -16,13 +16,14 @@ $this->menu=array(
 	'dataProvider'=>$dataProvider,
         'filter'=>$model,
 	'columns'=>array(
-		array('value'=>'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/view",
-                    array("id"=>$data->id)))',
+		array(
+                    'value'=>'isset($data->dynamic) && isset($data->ippool->first)?'.
+                    'CHtml::link("IP пул:".$data->ippool->name,Yii::app()->createUrl("/ippools/update",array("id"=>$data->ippool->id))):'.
+                    'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/view",array("id"=>$data->id)))',
                     'type'=>'html',
                     'header' => 'IP адрес',
                     'name' => 'int_ip'),
                 'Name::Идентификатор(login)',
-		'mac::MAC адрес',
 		'flag_block:boolean',
                 array('header'=>'Абонент',
                     'name'=>'PName',

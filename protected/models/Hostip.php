@@ -89,7 +89,8 @@ class Hostip extends CActiveRecord
 	public function relations()
 	{
 		return array(
-                    'person'=>array(self::BELONGS_TO, 'Persons', 'PersonId')
+                    'person'=>array(self::BELONGS_TO, 'Persons', 'PersonId'),
+                    'ippool'=>array(self::BELONGS_TO, 'IpPools', 'int_ip'),
 		);
 	}
 

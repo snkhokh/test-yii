@@ -10,7 +10,7 @@ $this->menu=array(
 	array('label'=>'Создать новый пул', 'url'=>array('create')),
 );
 
-//@todo в списке пулов - от -до, кол-во, группировка по насам...
+//@todo в списке пулов группировка по насам...
     $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'ip-pools-grid',
         'filter'=>$model,'dataProvider'=>$dataProvider,

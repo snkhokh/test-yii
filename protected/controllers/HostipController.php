@@ -135,8 +135,8 @@ class HostipController extends Controller
                     $model->attributes=$_GET['Hostip'];
                 
                 $criteria = new CDbCriteria(array(
-                    'with'=>'person',
-                    'together'=>true,
+                    'with'=>array('person','ippool'),
+//                    'together'=>true,
                     ));
                 $criteria->compare('CONCAT_WS(\'/\',inet_NTOA(int_ip),mask)', $model->int_ip,true);
                 $criteria->compare('t.Name', $model->Name,true);
