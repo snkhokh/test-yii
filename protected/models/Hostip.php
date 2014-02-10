@@ -50,6 +50,7 @@ class Hostip extends CActiveRecord
             array('password', 'length', 'max' => 24, 'min' => 4),
             array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
             array('flag_block','boolean'),
+            array('dynamic','boolean'),
             array('traf_filter','safe'),
             array('Name, int_ip, mac, flag_block, PName', 'safe', 'on' => 'search'),
         );

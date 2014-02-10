@@ -18,8 +18,8 @@ $this->menu=array(
 	'columns'=>array(
 		array(
                     'value'=>'isset($data->dynamic) && isset($data->ippool->first)?'.
-                    'CHtml::link("IP пул:".$data->ippool->name,Yii::app()->createUrl("/ippools/update",array("id"=>$data->ippool->id))):'.
-                    'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/view",array("id"=>$data->id)))',
+                    'CHtml::link("IP пул:".$data->ippool->name,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id))):'.
+                    'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id)))',
                     'type'=>'html',
                     'header' => 'IP адрес',
                     'name' => 'int_ip'),
