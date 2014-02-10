@@ -13,13 +13,24 @@ class Hostip extends CActiveRecord
 	{
 		return 'hostip';
 	}
+        public $int_ip_s;
         
-        public function getint_ip_s (){
-            return long2ip ($this->int_ip);
+        protected function afterFind() {
+            parent::afterFind();
+            $this->int_ip_s = long2ip($this->int_ip);
         }
-        public function setint_ip_s($value){
-            $this->int_ip = ip2long ($value);
+
+        protected function beforeSave() {
+            if (!$this->dynamic) $this->int_ip = ip2long($this->int_ip_s);
+            return parent::beforeSave();
         }
+
+//        public function getint_ip_s (){
+//            return long2ip ($this->int_ip);
+//        }
+//        public function setint_ip_s($value){
+//            $this->int_ip = ip2long ($value);
+//        }
 
         public function getflag_block(){
             return preg_match('/D/',$this->flags);
@@ -42,11 +53,11 @@ class Hostip extends CActiveRecord
 
     public function rules() {
         return array(
-            array('Name,int_ip_s,mask,password', 'required'),
+            array('Name,mask,password', 'required'),
             array('Name', 'unique'),
             array('Name', 'length', 'max' => 15, 'min' => 4),
             array('int_ip_s', 'match', 'pattern' => '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
-            array('int_ip_s', 'UniqueIpS'),
+            array('int_ip_s,int_ip', 'UniqueIpS'),
             array('password', 'length', 'max' => 24, 'min' => 4),
             array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
             array('flag_block','boolean'),
@@ -57,30 +68,45 @@ class Hostip extends CActiveRecord
     }
 
     public function UniqueIpS($attr, $param) {
-        $value = $this->$attr;
-        $criteria = new CDbCriteria();
-        $criteria->addCondition("int_ip=:p1");
-        $criteria->params[':p1'] = ip2long($value);
-
-        if ($this->isNewRecord)
-            $exists = $this->exists($criteria);
-        else {
-            $criteria->limit = 2;
-            $objects = $this->findAll($criteria);
-            $n = count($objects);
-            if ($n === 1) {
-                // need to exclude the current record based on PK
-                $exists = array_shift($objects)->getPrimaryKey() != $this->getOldPrimaryKey();
+        if ($this->dynamic) {
+            if ($attr === 'int_ip_s') return;
+            if (!IpPools::model()->exists('id=:id',array('id' => $this->int_ip))) {
+                $message = 'Недействительный IP пул';
+                $this->addError($attr, $message);
+                return;
             }
-            else
-                $exists = $n > 1;
-        }
+        } elseif ($attr === 'int_ip_s') {
+            $value = ip2long($this->int_ip_s);
+            if (! $value) {
+                $message = 'Недействительный {attr}';
+                $this->addError($attr, strtr($message, array(
+                    '{attr}' => $this->getAttributeLabel($attr))));
+                return;
+            }
+            $criteria = new CDbCriteria();
+            $criteria->addCondition("int_ip=:p1");
+            $criteria->addCondition("dynamic=FALSE");
+            $criteria->params[':p1'] = $value;
 
-        if ($exists) {
-            $message = '{attr} "{value}" уже занят';
-            $this->addError($attr, strtr($message, array(
-                '{value}' => CHtml::encode($value),
-                '{attr}' => $this->getAttributeLabel($attr))));
+            if ($this->isNewRecord)
+                $exists = $this->exists($criteria);
+            else {
+                $criteria->limit = 2;
+                $objects = $this->findAll($criteria);
+                $n = count($objects);
+                if ($n === 1) {
+                    // need to exclude the current record based on PK
+                    $exists = array_shift($objects)->getPrimaryKey() != $this->getOldPrimaryKey();
+                }
+                else
+                    $exists = $n > 1;
+            }
+            if ($exists) {
+                $message = '{attr} "{value}" уже занят';
+                $this->addError($attr, strtr($message, array(
+                    '{value}' => CHtml::encode($this->int_ip_s),
+                    '{attr}' => $this->getAttributeLabel($attr))));
+            }
         }
     }
 

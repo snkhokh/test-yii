@@ -160,7 +160,7 @@ class HostipController extends Controller
 		$rec = Persons::model()->findByPk($id);
                 $person = (isset($rec->Name)) ? $rec->Name : '';
                 $dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
-                    array('condition' => 'PersonId = '.$id),
+                    array('condition' => 'PersonId = '.$id,'with'=>array('ippool')),
                     'pagination'=>array('pageSize'=>20),));
 		$this->render('persindex',array(
                     'dataProvider'=>$dataProvider,

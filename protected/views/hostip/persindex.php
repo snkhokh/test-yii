@@ -19,12 +19,13 @@ $this->menu=array(
 	'id'=>'phostip-grid',
 	'dataProvider'=>$dataProvider,
 	'columns'=>array(
-    		array('value'=>'CHtml::link($data->int_ip_s."/".$data->mask,Yii::app()->createUrl("/hostip/update",
-                    array("id"=>$data->id)))',
+    		array('value'=>'$data->dynamic && isset($data->ippool->first)?'.
+                    'CHtml::link("IP пул:".$data->ippool->name,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id))):'.
+                    'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id)))',
                     'type'=>'html',
                     'header' => 'IP адрес',
                     'name' => 'int_ip'),
-		'Name', 'password','mac','flags',
+                    'Name', 'password','mac','flags',
                 
 		
 	),

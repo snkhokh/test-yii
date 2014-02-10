@@ -17,7 +17,7 @@ $this->menu=array(
         'filter'=>$model,
 	'columns'=>array(
 		array(
-                    'value'=>'isset($data->dynamic) && isset($data->ippool->first)?'.
+                    'value'=>'$data->dynamic && isset($data->ippool->first)?'.
                     'CHtml::link("IP пул:".$data->ippool->name,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id))):'.
                     'CHtml::link(long2ip($data->int_ip)."/".$data->mask,Yii::app()->createUrl("/hostip/update",array("id"=>$data->id)))',
                     'type'=>'html',
