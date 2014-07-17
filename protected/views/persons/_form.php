@@ -41,7 +41,7 @@
 		
             
                 <?php echo $form->labelEx($model,'TaxRateId'); ?>
-		<?php echo $form->dropDownList($model,'TaxRateId',CHtml::listData(TaxRates::model()->findAll(),'id','Name')); ?>
+		<?php echo $form->dropDownList($model,'TaxRateId',CHtml::listData(TaxRates::model()->findAll(),'id','name')); ?>
 		<?php echo $form->error($model,'TaxRateId'); ?>
 	</div>
 

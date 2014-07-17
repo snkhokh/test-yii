@@ -61,7 +61,8 @@ class PersonsController extends Controller
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
-			if($model->save())
+                        $model->version = $this->next_version();
+                        if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
@@ -85,6 +86,7 @@ class PersonsController extends Controller
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
+                        $model->version = $this->next_version();
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -107,11 +109,23 @@ class PersonsController extends Controller
                 Yii::app()->user->setFlash('error', $msg);
                 return $this->redirect(array('view','id'=>$id));
             }
-            $model->delete();
+            
+            $model->version = $this->next_version();
+            $model->deleted = TRUE;
+            
+            $model->save();
             $this->redirect(array('persons/index'));
 	}
 
-	/**
+        public function next_version()
+        {
+            $criteria = new CDbCriteria;
+            $criteria->select = 'MAX(version)+1 AS version';
+            $r = Persons::model()->find($criteria);
+            return $r->version;
+        }
+
+        /**
 	 * Lists all models.
 	 */
 	public function actionIndex()
@@ -130,6 +144,7 @@ class PersonsController extends Controller
 
 //  TODO возможность переключения режима поиска - регистрозависимый/независимый...
             
+            $criteria->addCondition('NOT t.deleted','AND');
             $criteria->addSearchCondition('t.Name',$model->Name,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->addSearchCondition('t.FIO',$model->FIO,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);

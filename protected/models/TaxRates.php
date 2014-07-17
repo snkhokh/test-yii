@@ -8,7 +8,7 @@ class TaxRates extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'tax_rates';
+		return 'traf_planes';
 	}
 
 	/**
@@ -19,15 +19,12 @@ class TaxRates extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('Name', 'length', 'max'=>50),
-			array('TrafUnit, PrePayedUnits, flag', 'length', 'max'=>10),
-			array('dir', 'filter','filter'=>array($this,'impDir')),
-			array('id, Name, TrafUnit, PrePayedUnits, dir, flag', 'safe', 'on'=>'search'),
+			array('name', 'length', 'max'=>50),
+			array('tp_class_name',  'length', 'max'=>30),
+                        array('param', 'length','max'=>255),
+                        array('id, name, tp_class_name, param', 'safe', 'on'=>'search'),
 		);
 	}
-        public function impDir($a) {
-            return implode(',', $a);
-        }
 	/**
 	 * @return array relational rules.
 	 */
@@ -46,11 +43,10 @@ class TaxRates extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'Name' => 'Наименование плана',
-			'TrafUnit' => 'Единица трафика (байт)',
-			'PrePayedUnits' => 'Плановый лимит единиц',
-			'dir' => 'Учитываемые потоки',
-			'flag' => 'Тип предоставления',
+			'name' => 'Наименование плана',
+                        'tp_class_name' => 'Имя класса обработчика',
+                        'param' => 'Параметры обработчика',
+
 		);
 	}
 
@@ -71,12 +67,10 @@ class TaxRates extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('Name',$this->Name,true);
-		$criteria->compare('TrafUnit',$this->TrafUnit,true);
-		$criteria->compare('PrePayedUnits',$this->PrePayedUnits,true);
-		$criteria->compare('dir',$this->dir,true);
-		$criteria->compare('flag',$this->flag,true);
-
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('param',$this->param,true);
+                $criteria->compare('tp_class_name',$this->tp_class_name,true);
+                
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

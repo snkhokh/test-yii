@@ -17,8 +17,9 @@ $this->menu=array(
     
 <?php foreach ($dataProvider->getData() as $row) {?>
     <tr class="odd">
-    <td><?php echo $row->Name ?></td>
-    <td><?php echo $row->descr?></td>
+    <td><?php echo $row->name ?></td>
+    <td><?php echo $row->tp_class_name ?></td>
+    <td><?php echo $row->param?></td>
 </tr>
 <?php } ?>
 </table>

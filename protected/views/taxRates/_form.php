@@ -20,9 +20,9 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'Name'); ?>
-		<?php echo $form->textField($model,'Name',array('size'=>50,'maxlength'=>50)); ?>
-		<?php echo $form->error($model,'Name'); ?>
+		<?php echo $form->labelEx($model,'name'); ?>
+		<?php echo $form->textField($model,'name',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'name'); ?>
 	</div>
 
 	<div class="row">
