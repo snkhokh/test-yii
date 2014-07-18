@@ -61,9 +61,15 @@ class PersonsController extends Controller
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
-                        $model->version = $this->next_version();
-                        if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                                $this->redirect(array('view','id'=>$model->id));
+                        }
 		}
 
 		$this->render('create',array(
@@ -86,11 +92,17 @@ class PersonsController extends Controller
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
-                        $model->version = $this->next_version();
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret) 
+                                $this->redirect(array('view','id'=>$model->id));
+                            
+                        }
 		}
-
 		$this->render('update',array(
 			'model'=>$model,
 		));
@@ -109,11 +121,12 @@ class PersonsController extends Controller
                 Yii::app()->user->setFlash('error', $msg);
                 return $this->redirect(array('view','id'=>$id));
             }
-            
+            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
             $model->version = $this->next_version();
             $model->deleted = TRUE;
+            $model->save(false);
+            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
             
-            $model->save();
             $this->redirect(array('persons/index'));
 	}
 
