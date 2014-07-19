@@ -13,7 +13,8 @@ class Hostip extends CActiveRecord
 	{
 		return 'hostip';
 	}
-        public $int_ip_s;
+        
+                 public $int_ip_s;
         
         protected function afterFind() {
             parent::afterFind();

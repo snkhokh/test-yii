@@ -31,7 +31,7 @@ class Persons extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId'),
+                    'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId',  'condition'=>'NOT hosts.deleted'),
                     'taxs'=>array(self::BELONGS_TO, 'TaxRates', 'TaxRateId'),
 		);
 	}

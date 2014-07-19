@@ -51,6 +51,14 @@ class HostipController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
+        public function next_version()
+        {
+            $criteria = new CDbCriteria;
+            $criteria->select = 'MAX(version)+1 AS version';
+            $r = Hostip::model()->find($criteria);
+            return $r->version;
+        }
+
 	public function actionCreate($pid)
 	{
             $person = Persons::model()->findByPk($pid);
@@ -66,10 +74,16 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save()) {
-                            Flags::model()->ServerReload();
-                            $this->redirect(array('persindex','id'=>$model->PersonId));
-                            
+			if($model->validate()) {
+                            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                            {
+                                Flags::model()->ServerReload();
+                                $this->redirect(array('persindex','id'=>$model->PersonId));
+                            }
                         }
 		}
 
@@ -93,10 +107,17 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save()) {
-                            Flags::model()->ServerReload();
-                            $this->redirect(array('persindex','id'=>$model->PersonId));
-                        
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                            {
+                                Flags::model()->ServerReload();
+                                $this->redirect(array('persindex','id'=>$model->PersonId));
+                            }
                         }
 		}
 
@@ -112,17 +133,20 @@ class HostipController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-            $target = $this->loadModel($id);
-            $pid = $target->PersonId;
-            $target->delete();
+            $model = $this->loadModel($id);
+            $pid = $model->PersonId;
+            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+            $model->deleted = TRUE;
+            $model->version = $this->next_version();
+            $ret = $model->save(false);
+            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+            Flags::model()->ServerReload();
+            if(!isset($_GET['ajax']))
+            {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('persindex','id'=>$pid));
+            }
 
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
-                    Flags::model()->ServerReload();
-                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('persindex','id'=>$pid));
-
-                }
-	}
+        }
 
 	/**
 	 * Lists all models.
@@ -138,6 +162,7 @@ class HostipController extends Controller
                     'with'=>array('person','ippool'),
 //                    'together'=>true,
                     ));
+                $criteria->addCondition('NOT t.deleted');
                 $criteria->compare('CONCAT_WS(\'/\',inet_NTOA(int_ip),mask)', $model->int_ip,true);
                 $criteria->compare('t.Name', $model->Name,true);
                 $criteria->compare('person.Name', $model->PName,true);
@@ -160,7 +185,7 @@ class HostipController extends Controller
 		$rec = Persons::model()->findByPk($id);
                 $person = (isset($rec->Name)) ? $rec->Name : '';
                 $dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
-                    array('condition' => 'PersonId = '.$id,'with'=>array('ippool')),
+                    array('condition' => 'NOT deleted AND PersonId = '.$id,'with'=>array('ippool')),
                     'pagination'=>array('pageSize'=>20),));
 		$this->render('persindex',array(
                     'dataProvider'=>$dataProvider,
