@@ -158,6 +158,7 @@ class PersonsController extends Controller
 //  TODO возможность переключения режима поиска - регистрозависимый/независимый...
             
             $criteria->addCondition('NOT t.deleted','AND');
+            $criteria->addCondition('NOT hosts.deleted','AND');
             $criteria->addSearchCondition('t.Name',$model->Name,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->addSearchCondition('t.FIO',$model->FIO,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);
