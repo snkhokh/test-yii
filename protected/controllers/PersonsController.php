@@ -152,13 +152,12 @@ class PersonsController extends Controller
             $criteria = new CDbCriteria;
             $criteria -> with = array('hosts');
             $criteria -> select = '*,count(hosts.id) AS hostcount';
-            $criteria -> group = 'hosts.PersonId';
+            $criteria -> group = 't.id';
             $criteria -> together =true;
 
 //  TODO возможность переключения режима поиска - регистрозависимый/независимый...
             
             $criteria->addCondition('NOT t.deleted','AND');
-            $criteria->addCondition('NOT hosts.deleted','AND');
             $criteria->addSearchCondition('t.Name',$model->Name,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->addSearchCondition('t.FIO',$model->FIO,true,'AND','COLLATE utf8_general_ci LIKE');
             $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);
