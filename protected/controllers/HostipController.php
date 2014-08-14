@@ -27,16 +27,7 @@ class HostipController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','persindex'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+			array('allow', 
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -60,9 +51,22 @@ class HostipController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+        public function next_version()
+        {
+            $criteria = new CDbCriteria;
+            $criteria->select = 'MAX(version)+1 AS version';
+            $r = Hostip::model()->find($criteria);
+            return $r->version;
+        }
+
+	public function actionCreate($pid)
 	{
-		$model=new Hostip;
+            $person = Persons::model()->findByPk($pid);
+            if($person===null)
+                throw new CHttpException(404,'Запрошенного ресурса не существует.');
+
+            $model=new Hostip;
+             $model->PersonId = $person->id;   
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -70,8 +74,16 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate()) {
+                            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                            {
+                                $this->redirect(array('persindex','id'=>$model->PersonId));
+                            }
+                        }
 		}
 
 		$this->render('create',array(
@@ -94,8 +106,17 @@ class HostipController extends Controller
 		if(isset($_POST['Hostip']))
 		{
 			$model->attributes=$_POST['Hostip'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                            {
+                                $this->redirect(array('persindex','id'=>$model->PersonId));
+                            }
+                        }
 		}
 
 		$this->render('update',array(
@@ -110,47 +131,65 @@ class HostipController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+            $model = $this->loadModel($id);
+            $pid = $model->PersonId;
+            $model->dbConnection->createCommand('LOCK TABLES hostip WRITE, hostip AS t READ')->execute();
+            $model->deleted = TRUE;
+            $model->version = $this->next_version();
+            $ret = $model->save(false);
+            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+            if(!isset($_GET['ajax']))
+            {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('persindex','id'=>$pid));
+            }
 
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-	}
+        }
 
 	/**
 	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Hostip');
+                $model = new Hostip('search');
+                $model->unsetAttributes();
+                if(isset($_GET['Hostip']))
+                    $model->attributes=$_GET['Hostip'];
+                
+                $criteria = new CDbCriteria(array(
+                    'with'=>array('person','ippool'),
+//                    'together'=>true,
+                    ));
+                $criteria->addCondition('NOT t.deleted');
+                $criteria->compare('CONCAT_WS(\'/\',inet_NTOA(int_ip),mask)', $model->int_ip,true);
+                $criteria->compare('t.Name', $model->Name,true);
+                $criteria->compare('person.Name', $model->PName,true);
+                
+                
+                $dataProvider=new CActiveDataProvider($model,array(
+                    'criteria'=>$criteria,
+                    'sort'=>array('attributes'=>array('PName'=>'person.Name','Name','int_ip','mac','flags'),
+                        'defaultOrder'=>'int_ip',),
+                    'pagination'=>array('pageSize'=>20),
+                                    ));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+                        'model'=>$model,
 		));
 	}
 
 	public function actionPersIndex($id)
 	{
-		$dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
-                    array('condition' => 'PersonId = '.$id)));
+		$rec = Persons::model()->findByPk($id);
+                $person = (isset($rec->Name)) ? $rec->Name : '';
+                $dataProvider=new CActiveDataProvider('Hostip',array('criteria' =>
+                    array('condition' => 'NOT deleted AND PersonId = '.$id,'with'=>array('ippool')),
+                    'pagination'=>array('pageSize'=>20),));
 		$this->render('persindex',array(
-			'dataProvider'=>$dataProvider,
+                    'dataProvider'=>$dataProvider,
+                    'person'=>$person,
+                    'pid'=>$id,
 		));
 	}
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Hostip('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Hostip']))
-			$model->attributes=$_GET['Hostip'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-	}
-
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.

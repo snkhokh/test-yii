@@ -15,7 +15,7 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+        <p class="note">Поля, отмеченные <span class="required">*</span> заполнять обязательно.</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -38,32 +38,10 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'Bill'); ?>
-		<?php echo $form->textField($model,'Bill'); ?>
-		<?php echo $form->error($model,'Bill'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'BillCh'); ?>
-		<?php echo $form->textField($model,'BillCh'); ?>
-		<?php echo $form->error($model,'BillCh'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'UnitRem'); ?>
-		<?php echo $form->textField($model,'UnitRem',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'UnitRem'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'UnitRemOut'); ?>
-		<?php echo $form->textField($model,'UnitRemOut',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'UnitRemOut'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'TaxRateId'); ?>
-		<?php echo $form->textField($model,'TaxRateId'); ?>
+		
+            
+                <?php echo $form->labelEx($model,'TaxRateId'); ?>
+		<?php echo $form->dropDownList($model,'TaxRateId',CHtml::listData(TaxRates::model()->findAll(),'id','name')); ?>
 		<?php echo $form->error($model,'TaxRateId'); ?>
 	</div>
 

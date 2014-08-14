@@ -1,63 +1,124 @@
 <?php
 
 /**
- * This is the model class for table "hostip".
- *
- * The followings are the available columns in table 'hostip':
- * @property integer $id
- * @property string $Name
- * @property string $int_ip
- * @property string $ext_ip
- * @property integer $mask
- * @property string $mac
- * @property integer $PersonId
- * @property string $flags
- * @property string $password
- * @property string $inact_timeout
- * @property string $status
- * @property string $ch_status
- */
+ * @property boolean $flag_block 
+  */
 class Hostip extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
+         *
 	 */
 	public function tableName()
 	{
 		return 'hostip';
 	}
+        
+                 public $int_ip_s;
+        
+        protected function afterFind() {
+            parent::afterFind();
+            $this->int_ip_s = long2ip($this->int_ip);
+        }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('mask, PersonId', 'numerical', 'integerOnly'=>true),
-			array('Name', 'length', 'max'=>15),
-			array('int_ip, ext_ip, flags', 'length', 'max'=>10),
-			array('mac', 'length', 'max'=>17),
-			array('password', 'length', 'max'=>24),
-			array('inact_timeout', 'length', 'max'=>2),
-			array('status', 'length', 'max'=>7),
-			array('ch_status', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, Name, int_ip, ext_ip, mask, mac, PersonId, flags, password, inact_timeout, status, ch_status', 'safe', 'on'=>'search'),
-		);
-	}
+        protected function beforeSave() {
+            if (!$this->dynamic) $this->int_ip = ip2long($this->int_ip_s);
+            return parent::beforeSave();
+        }
 
-	/**
+//        public function getint_ip_s (){
+//            return long2ip ($this->int_ip);
+//        }
+//        public function setint_ip_s($value){
+//            $this->int_ip = ip2long ($value);
+//        }
+
+        public function getflag_block(){
+            return preg_match('/D/',$this->flags);
+        }
+
+        public function setflag_block($value){
+            $tmps=preg_replace ('/D/', '',$this->flags);
+            $this->flags = $value ? $tmps.'D' : $tmps;
+        }
+
+        public function gettraf_filter(){
+            return preg_replace('/[^XYZ]/','',$this->flags);
+        }
+
+        public function settraf_filter($value){
+           $this->flags = preg_replace ('/[XYZ]/', '',$this->flags).$value;
+        }
+        
+        public $PName;
+
+    public function rules() {
+        return array(
+            array('Name,mask,password', 'required'),
+            array('Name', 'unique'),
+            array('Name', 'length', 'max' => 15, 'min' => 4),
+            array('int_ip_s', 'match', 'pattern' => '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
+            array('int_ip_s,int_ip', 'UniqueIpS'),
+            array('password', 'length', 'max' => 24, 'min' => 4),
+            array('mask', 'numerical', 'integerOnly' => true, 'min' => 8, 'max' => 32),
+            array('flag_block','boolean'),
+            array('dynamic','boolean'),
+            array('traf_filter','safe'),
+            array('Name, int_ip, mac, flag_block, PName', 'safe', 'on' => 'search'),
+        );
+    }
+
+    public function UniqueIpS($attr, $param) {
+        if ($this->dynamic) {
+            if ($attr === 'int_ip_s') return;
+            if (!IpPools::model()->exists('id=:id',array('id' => $this->int_ip))) {
+                $message = 'Недействительный IP пул';
+                $this->addError($attr, $message);
+                return;
+            }
+        } elseif ($attr === 'int_ip_s') {
+            $value = ip2long($this->int_ip_s);
+            if (! $value) {
+                $message = 'Недействительный {attr}';
+                $this->addError($attr, strtr($message, array(
+                    '{attr}' => $this->getAttributeLabel($attr))));
+                return;
+            }
+            $criteria = new CDbCriteria();
+            $criteria->addCondition("int_ip=:p1");
+            $criteria->addCondition("dynamic=FALSE");
+            $criteria->params[':p1'] = $value;
+
+            if ($this->isNewRecord)
+                $exists = $this->exists($criteria);
+            else {
+                $criteria->limit = 2;
+                $objects = $this->findAll($criteria);
+                $n = count($objects);
+                if ($n === 1) {
+                    // need to exclude the current record based on PK
+                    $exists = array_shift($objects)->getPrimaryKey() != $this->getOldPrimaryKey();
+                }
+                else
+                    $exists = $n > 1;
+            }
+            if ($exists) {
+                $message = '{attr} "{value}" уже занят';
+                $this->addError($attr, strtr($message, array(
+                    '{value}' => CHtml::encode($this->int_ip_s),
+                    '{attr}' => $this->getAttributeLabel($attr))));
+            }
+        }
+    }
+
+    /**
 	 * @return array relational rules.
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
-                    'person'=>array(self::BELONGS_TO, 'Persons', 'PersonId')
+                    'person'=>array(self::BELONGS_TO, 'Persons', 'PersonId'),
+                    'ippool'=>array(self::BELONGS_TO, 'IpPools', 'int_ip'),
 		);
 	}
 
@@ -67,36 +128,20 @@ class Hostip extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'Name' => 'Name',
-			'int_ip' => 'Int Ip',
-			'ext_ip' => 'Ext Ip',
-			'mask' => 'Mask',
-			'mac' => 'Mac',
+			'Name' => 'Идентификатор (login)',
+			'int_ip_s' => 'IP адрес',
+			'mask' => 'Маска IP адреса',
+			'mac' => 'MAC адрес',
 			'PersonId' => 'Person',
-			'flags' => 'Flags',
-			'password' => 'Password',
-			'inact_timeout' => 'Inact Timeout',
-			'status' => 'Status',
-			'ch_status' => 'Ch Status',
+			'flags' => 'Флаги',
+			'password' => 'Пароль',
+                        'flag_block' => 'Блокировка',
+                        'traf_filter' => 'Фильтр трафика',
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
@@ -122,7 +167,7 @@ class Hostip extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Hostip the static model class
+         * @return Hostip the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
