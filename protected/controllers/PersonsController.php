@@ -27,16 +27,7 @@ class PersonsController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+			array('allow',
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -62,15 +53,23 @@ class PersonsController extends Controller
 	 */
 	public function actionCreate()
 	{
-	
+		$model=new Persons;
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret)
+                                $this->redirect(array('view','id'=>$model->id));
+                        }
 		}
 
 		$this->render('create',array(
@@ -93,10 +92,17 @@ class PersonsController extends Controller
 		if(isset($_POST['Persons']))
 		{
 			$model->attributes=$_POST['Persons'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->validate())
+                        {
+                            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
+                            $model->version = $this->next_version();
+                            $ret = $model->save(false);
+                            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+                            if ($ret) 
+                                $this->redirect(array('view','id'=>$model->id));
+                            
+                        }
 		}
-
 		$this->render('update',array(
 			'model'=>$model,
 		));
@@ -109,50 +115,76 @@ class PersonsController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            $model=$this->loadModel($id);
+            if(count($model->hosts) > 0) {
+                $msg = 'У абонента есть хосты, удаление невозможно!';
+                Yii::app()->user->setFlash('error', $msg);
+                return $this->redirect(array('view','id'=>$id));
+            }
+            $model->dbConnection->createCommand('LOCK TABLES persons WRITE, persons AS t READ')->execute();
+            $model->version = $this->next_version();
+            $model->deleted = TRUE;
+            $model->save(false);
+            $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
+            
+            $this->redirect(array('persons/index'));
 	}
 
-	/**
+        public function next_version()
+        {
+            $criteria = new CDbCriteria;
+            $criteria->select = 'MAX(version)+1 AS version';
+            $r = Persons::model()->find($criteria);
+            return $r->version;
+        }
+
+        /**
 	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-            $dataProvider=new CActiveDataProvider('Persons',array('criteria'=>array(
-                'with'=> array('hosts'=>array(
-                    'group' => 'hosts.PersonId'
-                )),
-                'select' => 'count(*) as hostcount',
-                )
-            ));
-            $this->render('index',array('dataProvider'=>$dataProvider,));
-	}
+            $model=new Persons('search');
+            $model->unsetAttributes();  // clear any default values
+            if(isset($_GET['Persons']))
+                    $model->attributes=$_GET['Persons'];
 
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Persons('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Persons']))
-			$model->attributes=$_GET['Persons'];
 
-		$this->render('admin',array(
-			'model'=>$model,
+            $criteria = new CDbCriteria;
+            $criteria -> with = array('hosts');
+            $criteria -> select = '*,count(hosts.id) AS hostcount';
+            $criteria -> group = 't.id';
+            $criteria -> together =true;
+
+//  TODO возможность переключения режима поиска - регистрозависимый/независимый...
+            
+            $criteria->addCondition('NOT t.deleted','AND');
+            $criteria->addSearchCondition('t.Name',$model->Name,true,'AND','COLLATE utf8_general_ci LIKE');
+            $criteria->addSearchCondition('t.FIO',$model->FIO,true,'AND','COLLATE utf8_general_ci LIKE');
+            $criteria->compare('t.PrePayedUnits',$model->PrePayedUnits,true);
+            if ($model->hostcount) {
+                $criteria->having = 'count(hosts.id) = :hcnt';
+                $criteria->params['hcnt'] = $model->hostcount;
+            }
+
+            $dataProvider=new CActiveDataProvider($model,array('criteria' => $criteria,
+                'sort'=>array('attributes'=>array('hostcount'=>array(
+                    'asc'=>'count(hosts.id)',
+                    'desc'=>'count(hosts.id) DESC',
+                    'label'=>'Количество хостов'),
+                    'Name','FIO','PrePayedUnits',),
+                    'defaultOrder'=>'t.Name',
+                ),
+                'pagination'=>array(
+                    'pageSize'=> 20,
+                ),
+                ));
+
+            $this->render('index',array(
+			'dataProvider'=>$dataProvider,
+                        'model'=>$model,
 		));
 	}
 
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return Persons the loaded model
-	 * @throws CHttpException
-	 */
 	public function loadModel($id)
 	{
 		$model=Persons::model()->findByPk($id);

@@ -1,15 +1,15 @@
 <?php
-/* @var $this HostipController */
-/* @var $model Hostip */
+/* @var $this NasController */
+/* @var $model Nas */
 
 $this->breadcrumbs=array(
-	'Hostips'=>array('index'),
+	'Nases'=>array('index'),
 	'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List Hostip', 'url'=>array('index')),
-	array('label'=>'Create Hostip', 'url'=>array('create')),
+	array('label'=>'List Nas', 'url'=>array('index')),
+	array('label'=>'Create Nas', 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -18,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$('#hostip-grid').yiiGridView('update', {
+	$('#nas-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -26,7 +26,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage Hostips</h1>
+<h1>Manage Nases</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -41,24 +41,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'hostip-grid',
+	'id'=>'nas-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
-		'Name',
-		'int_ip',
-		'ext_ip',
-		'mask',
-		'mac',
-		/*
-		'PersonId',
-		'flags',
-		'password',
-		'inact_timeout',
-		'status',
-		'ch_status',
-		*/
+		'name',
+		'ip_addr',
 		array(
 			'class'=>'CButtonColumn',
 		),

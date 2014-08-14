@@ -1,69 +1,41 @@
 <?php
 
-/**
- * This is the model class for table "persons".
- *
- * The followings are the available columns in table 'persons':
- * @property integer $id
- * @property string $Name
- * @property string $FIO
- * @property string $EMail
- * @property integer $Bill
- * @property string $BillCh
- * @property string $UnitRem
- * @property string $UnitRemOut
- * @property integer $TaxRateId
- * @property string $PrePayedUnits
- * @property string $Flags
- * @property string $Opt
- */
 class Persons extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
+	     
+        public function tableName()
 	{
 		return 'persons';
 	}
-
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
+        
+        public $hostcount;
+        
+        public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('Bill, TaxRateId', 'numerical', 'integerOnly'=>true),
+			array('Bill', 'numerical', 'integerOnly'=>true),
 			array('Name', 'length', 'max'=>50),
 			array('FIO', 'length', 'max'=>150),
 			array('EMail', 'length', 'max'=>100),
-			array('UnitRem, UnitRemOut, PrePayedUnits', 'length', 'max'=>10),
+			array('PrePayedUnits', 'length', 'max'=>10),
 			array('Flags', 'length', 'max'=>5),
-			array('BillCh, Opt', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id,Name, FIO, EMail, Bill, BillCh, UnitRem, UnitRemOut, TaxRateId, PrePayedUnits, Flags, Opt', 'safe', 'on'=>'search'),
+			array('Opt', 'safe'),
+                        array('TaxRateId','exist','attributeName'=>'id','className'=>'TaxRates'),
+			array('Name, FIO, EMail, PrePayedUnits, hostcount', 'safe', 'on'=>'search'),
 		);
 	}
-
-	/**
-	 * @return array relational rules.
-	 */
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId'),
-                    'hostcount'=>array(self::STAT,'Hostip','PersonId'),
+                    'hosts'=>array(self::HAS_MANY, 'Hostip', 'PersonId','on'=>'NOT hosts.deleted'),
+                    'taxs'=>array(self::BELONGS_TO, 'TaxRates', 'TaxRateId'),
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
 	public function attributeLabels()
 	{
 		return array(
@@ -75,8 +47,8 @@ class Persons extends CActiveRecord
 			'BillCh' => 'Bill Ch',
 			'UnitRem' => 'Unit Rem',
 			'UnitRemOut' => 'Unit Rem Out',
-			'TaxRateId' => 'Тарифный план',
-			'PrePayedUnits' => 'Лимит трафика',
+			'TaxRateId' => 'Трафик план',
+			'PrePayedUnits' => 'Теущий лимит',
 			'Flags' => 'Flags',
 			'Opt' => 'Opt',
 		);
@@ -96,7 +68,6 @@ class Persons extends CActiveRecord
 	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
