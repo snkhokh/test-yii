@@ -68,7 +68,7 @@ return array(
 		), */
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=10.128.1.1;dbname=traf_test',
+			'connectionString' => 'mysql:host=10.128.1.2;dbname=traf',
 			'emulatePrepare' => true,
 			'username' => 'traf',
 			'password' => '',

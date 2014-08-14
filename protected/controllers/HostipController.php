@@ -81,7 +81,6 @@ class HostipController extends Controller
                             $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
                             if ($ret)
                             {
-                                Flags::model()->ServerReload();
                                 $this->redirect(array('persindex','id'=>$model->PersonId));
                             }
                         }
@@ -115,7 +114,6 @@ class HostipController extends Controller
                             $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
                             if ($ret)
                             {
-                                Flags::model()->ServerReload();
                                 $this->redirect(array('persindex','id'=>$model->PersonId));
                             }
                         }
@@ -140,7 +138,6 @@ class HostipController extends Controller
             $model->version = $this->next_version();
             $ret = $model->save(false);
             $model->dbConnection->createCommand('UNLOCK TABLES')->execute();
-            Flags::model()->ServerReload();
             if(!isset($_GET['ajax']))
             {
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('persindex','id'=>$pid));
