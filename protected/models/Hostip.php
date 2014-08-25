@@ -55,7 +55,7 @@ class Hostip extends CActiveRecord
     public function rules() {
         return array(
             array('Name,mask,password', 'required'),
-            array('Name', 'unique'),
+            array('Name', 'unique', 'criteria' => array('condition'=>'deleted=FALSE')),
             array('Name', 'length', 'max' => 15, 'min' => 4),
             array('int_ip_s', 'match', 'pattern' => '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/'),
             array('int_ip_s,int_ip', 'UniqueIpS'),
@@ -87,6 +87,7 @@ class Hostip extends CActiveRecord
             $criteria = new CDbCriteria();
             $criteria->addCondition("int_ip=:p1");
             $criteria->addCondition("dynamic=FALSE");
+            $criteria->addCondition("deleted=FALSE");
             $criteria->params[':p1'] = $value;
 
             if ($this->isNewRecord)
